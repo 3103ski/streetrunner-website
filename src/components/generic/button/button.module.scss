@@ -1,0 +1,6 @@
+@import 'sass';
+
+.Button {
+	border-radius: map-get($borders, borders_large_radius);
+	letter-spacing: 1px;
+}
