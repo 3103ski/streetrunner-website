@@ -1,1 +1,1 @@
-export { default as CollapseSongs } from './CollapseSongs/CollapseSongs.tsx';
+export { default as CollapseSongs } from './Collapse/CollapseSongs.tsx';

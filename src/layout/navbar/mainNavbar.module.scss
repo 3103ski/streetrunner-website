@@ -5,7 +5,7 @@
 	align-items: flex-start;
 	width: 100%;
 	position: fixed;
-	padding: 10px 20px;
+	padding: 10px 0px;
 	z-index: 100;
 	justify-content: space-between;
 
@@ -18,8 +18,13 @@
 		}
 	}
 
+	.NavLeft {
+		padding: 0 20px;
+	}
+
 	.NavRight {
 		position: relative;
+		padding: 0 20px;
 
 		.LinkWrapper {
 			@include flex-center-center;
@@ -58,7 +63,7 @@
 				opacity: 0;
 			}
 			.Links {
-				right: 0;
+				right: 20px;
 				opacity: 1;
 				cursor: pointer;
 
