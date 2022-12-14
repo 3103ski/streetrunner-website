@@ -1,11 +1,13 @@
-// Packages
-// import { Row, Col } from 'antd';
-
 // Component Imports
-import { LandingSection } from './sections/';
+import { MusicSections, LandingSection } from './sections/';
 
 const HomePage = () => {
-	return <LandingSection />;
+	return (
+		<>
+			<LandingSection />
+			<MusicSections />
+		</>
+	);
 };
 
 export default HomePage;
