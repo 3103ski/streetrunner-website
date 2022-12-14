@@ -4,13 +4,27 @@ import Style from './button.module.scss';
 interface ButtonProps {
 	text?: string | null;
 	fluid?: boolean;
+	bottomSpace?: 'none' | 'sm' | 'md' | 'lg';
+	type?: 'primary' | 'secondary';
 	[x: string]: any;
 	children?: JSX.Element | JSX.Element[];
 }
 
-const Button = ({ text = null, fluid = false, children, ...rest }: ButtonProps) => {
+const Button = ({
+	text = null,
+	type = 'primary',
+	bottomSpace = 'none',
+	fluid = false,
+	children,
+	...rest
+}: ButtonProps) => {
 	return (
-		<AntBtn type='primary' className={Style.Button} data-fluid={fluid ? 1 : 0} {...rest}>
+		<AntBtn
+			data-type={type}
+			data-bottom-space={bottomSpace}
+			className={Style.Button}
+			data-fluid={fluid ? 1 : 0}
+			{...rest}>
 			{text ? text : children}
 		</AntBtn>
 	);

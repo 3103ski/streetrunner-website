@@ -8,6 +8,7 @@ import { ConfigProvider } from 'antd';
 import { HomePage, AboutPage, DiscographyPage } from 'pages';
 import routes from 'routes';
 import { MainNavbar } from 'layout';
+import layoutConfig from 'layout/layoutConfig';
 
 // Styling
 import Style from './app.module.scss';
@@ -21,7 +22,7 @@ function App() {
 				},
 			}}>
 			<Router>
-				<div className='App'>
+				<div className={Style.App} id={layoutConfig.APP_CONTAINER_ID}>
 					<MainNavbar />
 					<Routes>
 						<Route path={routes.HOME} element={<HomePage />} />

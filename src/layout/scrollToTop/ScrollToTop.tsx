@@ -1,22 +1,24 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React from 'react';
 
 import layoutOptions from '../layoutConfig';
 
-export default function ScrollTop() {
-	const routePath = useLocation();
+interface ScrollTopProps {
+	container?: string;
+}
 
+export default function ScrollTop({ container = layoutOptions.APP_CONTAINER_ID }: ScrollTopProps) {
 	const toTop = () => {
-		let view = document.getElementById(layoutOptions.VIEW_OUTER_ID);
+		let view = document.getElementById(container);
 
 		if (view) {
 			view.scrollTo(0, 0);
 		}
 	};
 
-	useEffect(() => {
+	React.useEffect(() => {
 		toTop();
-	}, [routePath]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return null;
 }

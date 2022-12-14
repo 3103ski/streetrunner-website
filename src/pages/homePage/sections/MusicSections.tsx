@@ -1,8 +1,10 @@
-import { Row, Col } from 'antd';
+import { Row, Col, Collapse } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { CollapseSongs, Button } from 'components';
+import { Button } from 'components';
 import routes from 'routes';
 import HomeSectionCard from './HomeSectionCard';
+
+const { Panel } = Collapse;
 
 const MusicSections = () => {
 	const navigate = useNavigate();
@@ -11,13 +13,34 @@ const MusicSections = () => {
 		<Row justify={'center'} align='middle' style={{ padding: '45px 0 ' }}>
 			<Col span={18}>
 				<HomeSectionCard title='AWARDS & NOMINATIONS'>
-					<CollapseSongs />
+					<Collapse accordion>
+						<Panel header='2018' key={122}>
+							<p>some content</p>
+						</Panel>
+						<Panel header='2018' key={133}>
+							<p>some content</p>
+						</Panel>
+					</Collapse>
 				</HomeSectionCard>
 				<HomeSectionCard title='RIAA CERTIFICATIONS'>
-					<CollapseSongs />
+					<Collapse accordion>
+						<Panel header='2018' key={1}>
+							<p>some content</p>
+						</Panel>
+						<Panel header='2020' key={'00'}>
+							<p>some content</p>
+						</Panel>
+					</Collapse>
 				</HomeSectionCard>
 				<HomeSectionCard title='DISCOGRAPHY'>
-					<CollapseSongs />
+					<Collapse accordion>
+						<Panel header='2018' key={11}>
+							<p>some content</p>
+						</Panel>
+						<Panel header='2019' key={2}>
+							<p>some content</p>
+						</Panel>
+					</Collapse>
 				</HomeSectionCard>
 				<Button onClick={() => navigate(routes.DISCOGRAPHY)}>See Full Discography</Button>
 			</Col>

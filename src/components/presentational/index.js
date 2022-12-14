@@ -1,1 +1,1 @@
-export { default as CollapseSongs } from './Collapse/CollapseSongs.tsx';
+export { default as SocialButtons } from './socialButtons/SocialButtons.tsx';

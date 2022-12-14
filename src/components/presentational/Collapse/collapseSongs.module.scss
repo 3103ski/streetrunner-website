@@ -1,9 +1,0 @@
-@import 'sass';
-
-.CollapseOuter {
-	border-color: map-get($theme-colors, color_themePrimary);
-
-	.Panel {
-		border-color: map-get($theme-colors, color_themePrimary) !important;
-	}
-}
