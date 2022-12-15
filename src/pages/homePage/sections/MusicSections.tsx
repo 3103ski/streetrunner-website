@@ -1,8 +1,9 @@
 import { Row, Col, Collapse } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'components';
+import { Button, SongItem } from 'components';
 import routes from 'routes';
 import HomeSectionCard from './HomeSectionCard';
+import { songs } from 'mockdata/mockSongs';
 
 const { Panel } = Collapse;
 
@@ -15,10 +16,20 @@ const MusicSections = () => {
 				<HomeSectionCard title='AWARDS & NOMINATIONS'>
 					<Collapse accordion>
 						<Panel header='2018' key={122}>
-							<p>some content</p>
+							{songs.map((song) => {
+								return (
+									<SongItem
+										title={`${song.nominationStatus} • ${song.nominatedFor}`}
+										subtitle={`${song.artist} - "${song.title}"`}
+									/>
+								);
+							})}
 						</Panel>
 						<Panel header='2018' key={133}>
-							<p>some content</p>
+							<SongItem title='Song' subtitle='some title' />
+							<SongItem title='Song' subtitle='some title' />
+							<SongItem title='Song' subtitle='some title' />
+							<SongItem title='Song' subtitle='some title' />
 						</Panel>
 					</Collapse>
 				</HomeSectionCard>

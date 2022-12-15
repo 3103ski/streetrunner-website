@@ -1,5 +1,17 @@
 @import './index';
 
+// GLOBALS
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span {
+	color: white !important;
+}
+
 //-----------------------------------
 // ==> Collapse Component
 //-----------------------------------
@@ -24,13 +36,6 @@
 	background-color: map-get($theme-colors, color_themePrimaryOpaq) !important;
 }
 
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-span {
-	color: white !important;
+.ant-collapse-content-box {
+	padding: 0 !important;
 }

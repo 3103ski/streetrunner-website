@@ -1,0 +1,56 @@
+@import 'sass';
+
+.Wrapper {
+	@include flex-start-center;
+	width: 100%;
+	padding: 20px 20px;
+	border-bottom: 1px solid map-get($theme-colors, color_themePrimary);
+
+	&[data-is-last-item='1'] {
+		border-bottom: none !important;
+	}
+
+	.Photo {
+		width: 55px;
+		border-radius: 10px;
+	}
+
+	.InfoWrapper {
+		padding: 0 20px;
+		width: 80%;
+
+		.Title {
+			font-size: 1.2rem;
+			line-height: 1.2rem;
+			margin-bottom: 0.5vw;
+		}
+
+		.SubTitle {
+			font-size: 0.75rem;
+			line-height: 0.75rem;
+			color: map-get($theme-colors, color_themeSecondary) !important;
+			margin: 0;
+		}
+	}
+
+	.PlayWrapper {
+		@include flex-center-center;
+		margin-left: auto;
+		height: 100%;
+
+		svg {
+			color: white;
+			font-size: 4rem;
+			transition: 0.3s;
+
+			&:hover {
+				cursor: pointer;
+				opacity: 0.65;
+			}
+		}
+	}
+
+	&:hover {
+		background-color: map-get($theme-colors, color_themePrimaryOpaq) !important;
+	}
+}
