@@ -6,7 +6,7 @@ import { Row, Col, Typography } from 'antd';
 
 // ==> Project Imports
 import { BioHeaderPic, BioFooterPic } from 'assets';
-import { Button, SocialButtons } from 'components';
+import { Button, SocialButtons, SongReel } from 'components';
 import routes from 'routes';
 import { Footer, ScrollToTop } from 'layout';
 
@@ -60,6 +60,7 @@ const AboutPage = () => {
 				</Row>
 			</Col>
 			<div className={Style.BottomContainer}>
+				<SongReel />
 				<Footer color='solid' />
 			</div>
 			<div className={Style.FooterPic} style={{ backgroundImage: `url(${BioFooterPic})` }}>
