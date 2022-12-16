@@ -6,11 +6,11 @@ import { Row, Col, Typography } from 'antd';
 
 // ==> Project Imports
 import { LandingHeader } from 'assets';
-import { Button } from 'components';
+import { Button, Overlay } from 'components';
 import routes from 'routes';
 
 // ==> Component
-import Style from './shared.module.scss';
+import Style from './homeLanding.module.scss';
 
 const { Text, Title } = Typography;
 
@@ -23,7 +23,7 @@ const LandingSection = () => {
 			style={{ backgroundImage: `url(${LandingHeader})` }}
 			align='middle'
 			justify={'center'}>
-			<div className={Style.Overlay} />
+			<Overlay type='light' />
 			<Col span='16' className={Style.Wrapper}>
 				<Title className={Style.Title} level={1}>
 					STREETRUNNER

@@ -1,13 +1,12 @@
-import * as React from 'react';
 import photos from 'mockdata/mockPhotos';
-import Style from './songReel.module.scss';
+import Style from './infiniteReel.module.scss';
 
-const SongReel = () => {
+const InfiniteReel = () => {
 	let [photoSize, photoXMargin] = [100, 6];
 
 	return (
 		<div
-			className={Style.SongReelOuter}
+			className={Style.InfiniteReelOuter}
 			style={{
 				'--total-photo-width': `-${photos.length * (photoSize + photoXMargin * 2)}px`,
 				'--double-photo-width': `${photos.length * (photoSize + photoXMargin * 2) * 2}px`,
@@ -15,7 +14,7 @@ const SongReel = () => {
 				'--photo-size': `${photoSize}px`,
 				'--photo-x-margin': `${photoXMargin}px`,
 			}}>
-			<div className={Style.SongReelInner}>
+			<div className={Style.InfiniteReelInner}>
 				{[...photos, ...photos].map((photo) => (
 					<img src={photo.secure_url} alt={`${photo._id}_song-cover`} />
 				))}
@@ -24,4 +23,4 @@ const SongReel = () => {
 	);
 };
 
-export default SongReel;
+export default InfiniteReel;

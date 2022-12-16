@@ -2,9 +2,9 @@ import { Image } from 'antd';
 import { songs } from 'mockdata/mockSongs';
 
 import { IconifyIcon, ICON_PLAY_BUTTON } from 'components';
-import Style from './songItem.module.scss';
+import Style from './songListItem.module.scss';
 
-interface SongItemProps {
+interface SongListItemProps {
 	title: string;
 	subtitle: string;
 	photo: string;
@@ -12,7 +12,7 @@ interface SongItemProps {
 	lastItem?: boolean | null;
 }
 
-const SongItem = ({ title, subtitle, lastItem = null }: SongItemProps) => {
+const SongListItem = ({ title, subtitle, lastItem = null }: SongListItemProps) => {
 	return (
 		<div className={Style.Wrapper} data-is-last-item={lastItem ? 1 : 0}>
 			<Image
@@ -33,4 +33,4 @@ const SongItem = ({ title, subtitle, lastItem = null }: SongItemProps) => {
 	);
 };
 
-export default SongItem;
+export default SongListItem;

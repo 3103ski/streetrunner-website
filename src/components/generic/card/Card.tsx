@@ -1,12 +1,16 @@
-import Style from './shared.module.scss';
+/**
+ * A component that presents data with a title and logo or graphic behind title
+ */
+
+import Style from './card.module.scss';
 import { Logo512 } from 'assets';
 
-interface HomeSegmentProps {
+interface CardProps {
 	title: string;
 	children?: JSX.Element | JSX.Element[];
 }
 
-const HomeSegment = ({ title, children }: HomeSegmentProps) => {
+const Card = ({ title, children }: CardProps) => {
 	return (
 		<div className={Style.SegmentWrapper}>
 			<div className={Style.TitleWrapper}>
@@ -18,4 +22,4 @@ const HomeSegment = ({ title, children }: HomeSegmentProps) => {
 	);
 };
 
-export default HomeSegment;
+export default Card;

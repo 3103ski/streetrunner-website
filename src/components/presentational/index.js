@@ -1,3 +1,10 @@
-export { default as SocialButtons } from './socialButtons/SocialButtons.tsx';
-export { default as SongItem } from './songItem/Songitem.tsx';
-export { default as SongReel } from './songReel/SongReel.jsx';
+// Homepage Sections
+export { default as AwardsAndNominations } from './home_AwardsAndNominations/AwardsAndNominations.tsx';
+export { default as DiscographyCard } from './home_Discography/DiscographyCard.tsx';
+export { default as HomeLanding } from './home_LandingSection/HomeLanding.tsx';
+export { default as RIAACertifications } from './home_RIAACertifications/RIAACertifications.tsx';
+
+// Shared Presentational
+export { default as SocialButtons } from './shared_SocialButtons/SocialButtons.tsx';
+export { default as SongListItem } from './shared_SongListItem/SongListitem.tsx';
+export { default as InfiniteReel } from './shared_InfiniteReel/InfiniteReel.jsx';

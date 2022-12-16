@@ -6,7 +6,7 @@ import { Row, Col, Typography } from 'antd';
 
 // ==> Project Imports
 import { BioHeaderPic, BioFooterPic } from 'assets';
-import { Button, SocialButtons, SongReel } from 'components';
+import { Button, SocialButtons, InfiniteReel, Overlay } from 'components';
 import routes from 'routes';
 import { Footer, ScrollToTop, ContentCol } from 'layout';
 
@@ -20,7 +20,7 @@ const AboutPage = () => {
 	return (
 		<Row justify={'center'} align='middle' style={{ padding: '45px 0 ' }} className={Style.BioSection}>
 			<div className={Style.HeaderPic} style={{ backgroundImage: `url(${BioHeaderPic})` }}>
-				<div className={Style.Filter} />
+				<Overlay type='light' />
 			</div>
 
 			<Col span={24} className={Style.Content}>
@@ -57,13 +57,13 @@ const AboutPage = () => {
 				</ContentCol>
 			</Col>
 
+			{/* These items are fixed to the bottom; ".Content" styling makes space for them in layout with marginbottom. */}
 			<div className={Style.BottomContainer}>
-				<SongReel />
+				<InfiniteReel />
 				<Footer color='solid' />
 			</div>
-
 			<div className={Style.FooterPic} style={{ backgroundImage: `url(${BioFooterPic})` }}>
-				<div className={Style.Filter} />
+				<Overlay />
 			</div>
 
 			<ScrollToTop />

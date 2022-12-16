@@ -9,14 +9,14 @@
 	}
 }
 
-.SongReelOuter {
+.InfiniteReelOuter {
 	@include flex-center-center;
 	width: 100%;
 	height: calc(#{var(--photo-size)} + 20px);
 	background-color: map-get($theme-colors, color_themePrimaryOpaq);
 	overflow: hidden;
 
-	.SongReelInner {
+	.InfiniteReelInner {
 		@include flex-center;
 		flex-wrap: nowrap;
 		width: var(--double-photo-width);
