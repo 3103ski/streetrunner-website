@@ -37,17 +37,20 @@ export type AudioUpload = {
 
 export type Song = {
 	album?: Album;
-	nominatedFor?: string;
 	photo?: Photo;
-	// required
 	_id: string;
-	artist: string;
-	title: string;
-	year: number;
-	nominationStatus: 'winner' | 'nominated' | 'none'; // default 'none'
-	isRIAACertified: boolean; // default false
-	useAlbumArt: boolean;
 	audio: AudioUpload;
+	title: string;
+	artist: string;
+	year: number;
+	//
+	useAlbumArt: boolean;
+	nominationStatus: 'winner' | 'nominated' | 'none'; // default 'none'
+	nominatedForLabel?: string;
+	nominatedFor?: 'Song' | 'Album' | string;
+
+	isRIAACertified: boolean; // default false
+	//
 	lastUpdated: string;
 	createdAt: string;
 };

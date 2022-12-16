@@ -3,15 +3,15 @@ import photos from 'mockdata/mockPhotos';
 import Style from './songReel.module.scss';
 
 const SongReel = () => {
-	let [photoSize, photoXMargin] = [100, 5];
+	let [photoSize, photoXMargin] = [100, 6];
 
 	return (
 		<div
 			className={Style.SongReelOuter}
 			style={{
-				'--total-photo-width': `-${photos.length * (photoSize + photoXMargin)}px`,
-				'--double-photo-width': `${photos.length * (photoSize + photoXMargin) * 2}px`,
-				'--animation-duration': `${photos.length * 1.5}s`,
+				'--total-photo-width': `-${photos.length * (photoSize + photoXMargin * 2)}px`,
+				'--double-photo-width': `${photos.length * (photoSize + photoXMargin * 2) * 2}px`,
+				'--animation-duration': `${photos.length * 1.2}s`,
 				'--photo-size': `${photoSize}px`,
 				'--photo-x-margin': `${photoXMargin}px`,
 			}}>

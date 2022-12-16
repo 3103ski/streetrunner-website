@@ -53,4 +53,27 @@
 	&:hover {
 		background-color: map-get($theme-colors, color_themePrimaryOpaq) !important;
 	}
+
+	@media only screen and (max-width: 576px) {
+		.Photo {
+			width: 45px;
+			border-radius: 5px;
+		}
+		.InfoWrapper {
+			padding: 0 10px;
+			width: 90%;
+
+			.Title {
+				font-size: 0.9rem;
+				line-height: 1rem;
+				margin-bottom: 0.5vw;
+			}
+
+			.SubTitle {
+				font-size: 0.7rem;
+				line-height: 0.7rem;
+				letter-spacing: 0.03rem;
+			}
+		}
+	}
 }

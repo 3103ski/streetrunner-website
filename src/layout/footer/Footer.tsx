@@ -24,7 +24,7 @@ const Footer = ({ color = 'opaq' }: FooterProps) => {
 					<div className={Style.OverlayColor} />
 					<Col span={18}>
 						<Row justify={'center'} align='middle'>
-							<Col span={18} className={Style.FooterLeft}>
+							<Col xs={24} sm={24} md={18} lg={18} xl={18} xxl={18} className={Style.FooterLeft}>
 								<Link to={routes.HOME}>
 									<img className={Style.Logo} alt='footer logo home link' src={Logo192} />
 								</Link>
@@ -37,7 +37,7 @@ const Footer = ({ color = 'opaq' }: FooterProps) => {
 									<p className={Style.Footnote}>© 2015 STREETRUNNER BEATS • All Rights Reserved</p>
 								</div>
 							</Col>
-							<Col span={6}>
+							<Col xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>
 								<SocialButtons />
 							</Col>
 						</Row>

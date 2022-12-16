@@ -36,7 +36,7 @@ export default function MainNavbar() {
 				</div>
 				<div className={Style.Links}>
 					<MenuButton icon={ICON_MUSIC_NOTES} path={routes.DISCOGRAPHY} />
-					<MenuButton icon={ICON_VIDEO} />
+					<MenuButton icon={ICON_VIDEO} path={routes.VIDEOS} />
 					<MenuButton icon={ICON_INFO} path={routes.ABOUT} />
 				</div>
 			</div>

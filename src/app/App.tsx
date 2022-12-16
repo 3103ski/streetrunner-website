@@ -5,9 +5,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 
 // ==> Project Imports
-import { HomePage, AboutPage, DiscographyPage } from 'pages';
-import routes from 'routes';
+import { AboutPage, DiscographyPage, HomePage, VideosPage } from 'pages';
 import { MainNavbar } from 'layout';
+import routes from 'routes';
 import layoutConfig from 'layout/layoutConfig';
 
 // Styling
@@ -25,9 +25,10 @@ function App() {
 				<div className={Style.App} id={layoutConfig.APP_CONTAINER_ID}>
 					<MainNavbar />
 					<Routes>
-						<Route path={routes.HOME} element={<HomePage />} />
 						<Route path={routes.ABOUT} element={<AboutPage />} />
 						<Route path={routes.DISCOGRAPHY} element={<DiscographyPage />} />
+						<Route path={routes.HOME} element={<HomePage />} />
+						<Route path={routes.VIDEOS} element={<VideosPage />} />
 					</Routes>
 				</div>
 			</Router>

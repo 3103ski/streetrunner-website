@@ -51,4 +51,10 @@
 			background: map-get($shades, color_primaryBlack) !important;
 		}
 	}
+
+	@media only screen and (max-width: 576px) {
+		.FooterLeft {
+			margin-bottom: 15px;
+		}
+	}
 }

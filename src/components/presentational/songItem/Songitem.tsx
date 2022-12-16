@@ -1,4 +1,4 @@
-import { Row, Col, Image } from 'antd';
+import { Image } from 'antd';
 import { songs } from 'mockdata/mockSongs';
 
 import { IconifyIcon, ICON_PLAY_BUTTON } from 'components';
