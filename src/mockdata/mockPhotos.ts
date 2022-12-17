@@ -4,7 +4,6 @@ const mockPhotos: Photo[] = [
 	// Khaled Khaled album art - DJ Khaled
 	{
 		_id: '9865h96785gr976r57h',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 1024,
@@ -22,7 +21,6 @@ const mockPhotos: Photo[] = [
 	// Father Of Asahd album art - DJ Khaled
 	{
 		_id: 'sdvwe5ytweywce5ywv5',
-		userId: '',
 		public_id: '89h65we5vyvw5er7868096nh',
 		tags: [],
 		width: 1024,
@@ -40,7 +38,6 @@ const mockPhotos: Photo[] = [
 	// Championships album art - Meek Mill
 	{
 		_id: 'hwv906t98w3tqwv3ft459b ',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 300,
@@ -58,7 +55,6 @@ const mockPhotos: Photo[] = [
 	// Back Of My Mind album art - H.E.R.
 	{
 		_id: 'vqm947y894hnt9469wvw9347bfg',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 300,
@@ -76,7 +72,6 @@ const mockPhotos: Photo[] = [
 	// Khaled Khaled album art - DJ Khaled
 	{
 		_id: '9865h96785gr976r57h',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 1024,
@@ -94,7 +89,6 @@ const mockPhotos: Photo[] = [
 	// Father Of Asahd album art - DJ Khaled
 	{
 		_id: 'sdvwe5ytweywce5ywv5',
-		userId: '',
 		public_id: '89h65we5vyvw5er7868096nh',
 		tags: [],
 		width: 1024,
@@ -112,7 +106,6 @@ const mockPhotos: Photo[] = [
 	// Championships album art - Meek Mill
 	{
 		_id: 'hwv906t98w3tqwv3ft459b ',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 300,
@@ -130,7 +123,6 @@ const mockPhotos: Photo[] = [
 	// Back Of My Mind album art - H.E.R.
 	{
 		_id: 'vqm947y894hnt9469wvw9347bfg',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 300,
@@ -148,7 +140,6 @@ const mockPhotos: Photo[] = [
 	// Khaled Khaled album art - DJ Khaled
 	{
 		_id: '9865h96785gr976r57h',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 1024,
@@ -166,7 +157,6 @@ const mockPhotos: Photo[] = [
 	// Father Of Asahd album art - DJ Khaled
 	{
 		_id: 'sdvwe5ytweywce5ywv5',
-		userId: '',
 		public_id: '89h65we5vyvw5er7868096nh',
 		tags: [],
 		width: 1024,
@@ -184,7 +174,6 @@ const mockPhotos: Photo[] = [
 	// Championships album art - Meek Mill
 	{
 		_id: 'hwv906t98w3tqwv3ft459b ',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 300,
@@ -202,7 +191,6 @@ const mockPhotos: Photo[] = [
 	// Back Of My Mind album art - H.E.R.
 	{
 		_id: 'vqm947y894hnt9469wvw9347bfg',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 300,
@@ -220,7 +208,6 @@ const mockPhotos: Photo[] = [
 	// Khaled Khaled album art - DJ Khaled
 	{
 		_id: '9865h96785gr976r57h',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 1024,
@@ -238,7 +225,6 @@ const mockPhotos: Photo[] = [
 	// Father Of Asahd album art - DJ Khaled
 	{
 		_id: 'sdvwe5ytweywce5ywv5',
-		userId: '',
 		public_id: '89h65we5vyvw5er7868096nh',
 		tags: [],
 		width: 1024,
@@ -256,7 +242,6 @@ const mockPhotos: Photo[] = [
 	// Championships album art - Meek Mill
 	{
 		_id: 'hwv906t98w3tqwv3ft459b ',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 300,
@@ -274,7 +259,6 @@ const mockPhotos: Photo[] = [
 	// Back Of My Mind album art - H.E.R.
 	{
 		_id: 'vqm947y894hnt9469wvw9347bfg',
-		userId: '',
 		public_id: '89h6597868096nh',
 		tags: [],
 		width: 300,

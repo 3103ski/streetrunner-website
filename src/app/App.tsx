@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 
 // ==> Project Imports
-import { AboutPage, DiscographyPage, HomePage, VideosPage } from 'pages';
+import { AuthPage, AboutPage, DiscographyPage, HomePage, VideosPage } from 'pages';
 import { MainNavbar } from 'layout';
 import routes from 'routes';
 import layoutConfig from 'layout/layoutConfig';
@@ -25,10 +25,13 @@ function App() {
 				<div className={Style.App} id={layoutConfig.APP_CONTAINER_ID}>
 					<MainNavbar />
 					<Routes>
+						{/* PUBLIC PAGES */}
 						<Route path={routes.ABOUT} element={<AboutPage />} />
 						<Route path={routes.DISCOGRAPHY} element={<DiscographyPage />} />
 						<Route path={routes.HOME} element={<HomePage />} />
 						<Route path={routes.VIDEOS} element={<VideosPage />} />
+						{/* CMS PAGES */}
+						<Route path={routes.CMS_LOGIN} element={<AuthPage />} />
 					</Routes>
 				</div>
 			</Router>

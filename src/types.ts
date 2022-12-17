@@ -1,6 +1,5 @@
 export type Photo = {
 	_id: string;
-	userId: string;
 	public_id: string;
 	tags: string[];
 	width: Number;
