@@ -1,13 +1,13 @@
 // React
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // ==> Packages
 import { Row, Col } from 'antd';
 
 // ==> Project Imports
 import { SocialButtons } from 'components';
-import routes from 'routes';
 import { Logo192 } from 'assets';
+import routes from 'routes';
 
 // Component
 import Style from './footer.module.scss';
@@ -17,6 +17,7 @@ interface FooterProps {
 }
 
 const Footer = ({ color = 'opaq' }: FooterProps) => {
+	const navigate = useNavigate();
 	return (
 		<Row justify={'center'} align='middle' className={Style.FooterWrapper}>
 			<Col span={24}>
@@ -34,7 +35,12 @@ const Footer = ({ color = 'opaq' }: FooterProps) => {
 										<Link to={routes.DISCOGRAPHY}>DISCOGRAPHY</Link>
 										<Link to={routes.ABOUT}>ABOUT</Link>
 									</div>
-									<p className={Style.Footnote}>© 2015 STREETRUNNER BEATS • All Rights Reserved</p>
+									<p className={Style.Footnote}>
+										© 2015 STREETRUNNER BEATS • All Rights Reserved •{' '}
+										<span className={Style.AdminLogin} onClick={() => navigate(routes.CMS_ADMIN)}>
+											Admin
+										</span>
+									</p>
 								</div>
 							</Col>
 							<Col xs={24} sm={24} md={6} lg={6} xl={6} xxl={6}>

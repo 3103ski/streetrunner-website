@@ -1,11 +1,14 @@
 import { AuthForm } from 'components';
-import { ContentCol } from 'layout';
+import { ContentCol, SecurityWrapper } from 'layout';
+import routes from 'routes';
 
 const AuthPage = () => {
 	return (
-		<ContentCol>
-			<AuthForm />
-		</ContentCol>
+		<SecurityWrapper validForward={routes.AUTH_SUCCESS_REDIRECT}>
+			<ContentCol>
+				<AuthForm />
+			</ContentCol>
+		</SecurityWrapper>
 	);
 };
 

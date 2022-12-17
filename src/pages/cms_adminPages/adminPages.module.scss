@@ -1,0 +1,13 @@
+@import 'sass';
+
+.Link {
+	color: map-get($theme-colors, color_themeSecondary);
+
+	&[data-is-active='1'] {
+		color: map-get($theme-colors, color_themePrimary);
+	}
+
+	&:hover {
+		color: map-get($theme-colors, color_themePrimary);
+	}
+}

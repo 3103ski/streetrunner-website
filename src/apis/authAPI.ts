@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // ==> Project Imports
 import routes from 'routes';
-import { DEFAULT_HEADERS } from 'config';
+import { DEFAULT_HEADERS, TOKEN_LABEL } from 'config';
 
 /**
  *
@@ -92,24 +92,30 @@ const authAPI = {
 				if (errorHandler) errorHandler({ errors });
 			});
 	},
-	// verifyToken(verifyCallback: (result: null | string) => void) {
-	// 	/** Check for token in local storage */
-	// 	let token = localStorage.getItem(TOKEN_LABEL);
+	verifyToken(verifyCallback: (result: null | string) => void) {
+		/** Check for token in local storage */
+		let token = localStorage.getItem(TOKEN_LABEL);
 
-	// 	if (!token) return verifyCallback(null);
+		if (!token) return verifyCallback(null);
 
-	// 	/** Ensure existing token is in headers */
-	// 	apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-	// 	return apiInstance({ method: 'GET', url: `${SERVER_URL}${API_AUTH_PREF}${API_CHECK_TOKEN}` })
-	// 		.then(({ data }) => {
-	// 			/** Pass token to set valid token in redux */
-	// 			if (data.token) verifyCallback(token);
-	// 		})
-	// 		.catch((_) => {
-	// 			/** The token was no good. Send back null through callback */
-	// 			verifyCallback(null);
-	// 		});
-	// },
+		/** Ensure existing token is in headers */
+		apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+		console.log('checking...');
+
+		return apiInstance({
+			method: 'GET',
+			url: `${routes.SERVER_URL}${routes.SERVER_AUTH}${routes.SERVER_AUTH_VERIFY_TOKEN}`,
+		})
+			.then(({ data }) => {
+				console.log({ data });
+				/** Pass token to set valid token in redux */
+				if (data.token) verifyCallback(token);
+			})
+			.catch((_) => {
+				/** The token was no good. Send back null through callback */
+				verifyCallback(null);
+			});
+	},
 };
 
 export { authAPI };

@@ -3,6 +3,8 @@ export const ICON_MENU = 'ic:twotone-menu-open';
 export const ICON_MUSIC_NOTES = 'ph:music-notes-light';
 export const ICON_VIDEO = 'ic:baseline-ondemand-video';
 export const ICON_PLAY_BUTTON = 'material-symbols:play-circle';
+export const ICON_SETTINGS = 'material-symbols:settings-rounded';
+export const ICON_LOGOUT = 'humbleicons:logout';
 
 // Brands
 export const ICON_INSTAGRAM = 'ph:instagram-logo';

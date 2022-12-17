@@ -11,6 +11,7 @@ import { LoginArgs, RegisterArgs, authAPI } from 'apis/authAPI';
 import { useForm } from 'hooks';
 import routes from 'routes';
 import { Card } from 'components';
+import { TOKEN_LABEL } from 'config';
 
 /**
  *
@@ -38,7 +39,7 @@ export default function AuthForm() {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const [errors, setErrors] = React.useState<{ [key: string]: string } | any>({});
 	const [authSuccess, setAuthSuccess] = React.useState<boolean>(false);
-	const [isRegistering] = React.useState<boolean>(true);
+	const [isRegistering] = React.useState<boolean>(false);
 
 	const { values, onChange, onSubmit } = useForm({ callback: handleLogin, initialState });
 
@@ -53,12 +54,17 @@ export default function AuthForm() {
 			return setErrors({ tokenError: 'User validated but got no token' });
 		}
 
+		let existingToken = localStorage.getItem(TOKEN_LABEL);
+		if (existingToken) localStorage.removeItem(TOKEN_LABEL);
+		localStorage.setItem(TOKEN_LABEL, token);
+
 		/** We should have a good token and valid User; serialize data for redux */
 		return setAuthSuccess(true);
 	}
 
 	function errorHandler(e: any) {
 		const { errors } = e;
+		localStorage.removeItem(TOKEN_LABEL);
 		setErrors(errors);
 		return setIsLoading(false);
 	}
@@ -89,7 +95,7 @@ export default function AuthForm() {
 			}}>
 			{authSuccess ? (
 				<>
-					<Navigate to={routes.CMS_DASH} replace />
+					<Navigate to={routes.AUTH_SUCCESS_REDIRECT} replace />
 					{/* Required for testing redirect gets rendered */}
 					<div data-testid='login-redirect' />
 				</>

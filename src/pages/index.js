@@ -6,3 +6,4 @@ export { default as VideosPage } from './public_videosPage/VideosPage.tsx';
 
 // CMS Pages
 export { default as AuthPage } from './cms_authPage/AuthPage.tsx';
+export { default as AdminPages } from './cms_adminPages/AdminPages.tsx';

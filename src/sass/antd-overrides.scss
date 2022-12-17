@@ -1,4 +1,5 @@
 @import './index';
+@import 'sass';
 
 // GLOBALS
 p,
@@ -11,6 +12,17 @@ h6,
 span {
 	color: white !important;
 }
+
+//-----------------------------------
+// ==> Menu Tabs
+//-----------------------------------
+.ant-tabs-tab {
+	color: map-get($theme-colors, color_themeSecondary);
+}
+
+// .ant-tabs-tab-active {
+
+// }
 
 //-----------------------------------
 // ==> Collapse Component

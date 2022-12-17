@@ -42,9 +42,17 @@
 			}
 		}
 
-		.Footnote {
-			color: map-get($theme-colors, color_themeSecondary);
+		.Footnote,
+		.AdminLogin {
 			font-size: 0.5rem;
+		}
+
+		.AdminLogin {
+			color: map-get($theme-colors, color_themePrimaryOpaq) !important;
+		}
+
+		.AdminLogin:hover {
+			cursor: pointer;
 		}
 
 		&[data-color='solid'] {

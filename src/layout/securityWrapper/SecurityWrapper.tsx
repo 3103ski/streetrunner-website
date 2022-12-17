@@ -1,16 +1,11 @@
 // ==> React
 import * as React from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // ==> Project Imports
-// import { useAppSelector, useAppDispatch } from 'app/hooks';
-// import { authAPI } from 'apis/authAPI';
-// import { NO_AUTH_REDIRECT } from 'routes';
-// import { TOKEN_LABEL } from 'config';
-
-// ==> Features
-// import { setNetworkBanners } from 'features/networkBanner/network-banner-slice';
-// import { logout } from 'features/accounts/accounts-slice';
+import { authAPI } from 'apis/authAPI';
+import routes from 'routes';
+import { TOKEN_LABEL } from 'config';
 
 /**
  *--------------------------------
@@ -23,41 +18,39 @@ import * as React from 'react';
  */
 
 interface ProtectedPageWrapperProps {
+	validForward?: string | null;
 	children?: JSX.Element | JSX.Element[];
 }
 
-export default function ProtectedPageWrapper({ children }: ProtectedPageWrapperProps) {
-	// // ==> Redux Hooks
-	// const { token } = useAppSelector((state) => state.account);
-	// const dispatch = useAppDispatch();
-	// const navigate = useNavigate();
+export default function ProtectedPageWrapper({ validForward = null, children }: ProtectedPageWrapperProps) {
+	// ==> Redux Hooks
+	const navigate = useNavigate();
+	let token = localStorage.getItem(TOKEN_LABEL);
 
-	// const handleNoAuthRedirect = React.useCallback(() => {
-	// 	localStorage.removeItem(TOKEN_LABEL);
-	// 	dispatch(logout());
-	// 	dispatch(
-	// 		setNetworkBanners({
-	// 			networkBanner: { type: 'error', message: 'Invalid/Expired token. Please login again.' },
-	// 		})
-	// 	);
-	// 	navigate(NO_AUTH_REDIRECT);
-	// }, [dispatch, navigate]);
+	const handleNoAuthRedirect = React.useCallback(() => {
+		localStorage.removeItem(TOKEN_LABEL);
+		navigate(routes.CMS_NO_AUTH_FWD);
+	}, [navigate]);
 
-	// /** A callback for verifying the current token is valid */
-	// const verifyTokenCallback = React.useCallback(
-	// 	(responseToken: null | string) => {
-	// 		if (!responseToken || !token) {
-	// 			/** If we recieved null, the token is invalid and any account info should be cleared */
-	// 			handleNoAuthRedirect();
-	// 		}
-	// 	},
-	// 	[handleNoAuthRedirect, token]
-	// );
+	/** A callback for verifying the current token is valid */
+	const verifyTokenCallback = React.useCallback(
+		(responseToken: null | string) => {
+			if (!responseToken || !token) {
+				/** If we recieved null, the token is invalid and any account info should be cleared */
+				handleNoAuthRedirect();
+			} else {
+				/** If the token is valid, the page might automatically move the user away. e.g. a login
+				 * page should send an authorized user to their dash or something */
+				if (validForward) navigate(validForward);
+			}
+		},
+		[handleNoAuthRedirect, navigate, token, validForward]
+	);
 
-	// React.useEffect(() => {
-	// 	/** Use api to verify token on component mount */
-	// 	authAPI.verifyToken(verifyTokenCallback);
-	// }, [verifyTokenCallback]);
+	React.useEffect(() => {
+		/** Use api to verify token on component mount */
+		authAPI.verifyToken(verifyTokenCallback);
+	}, [verifyTokenCallback]);
 
 	return <>{children}</>;
 }

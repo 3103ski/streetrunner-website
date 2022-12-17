@@ -8,4 +8,4 @@ export const DEFAULT_HEADERS = {
 const minutesForToken = 60;
 const tokenDuration = 1000 * 60 * minutesForToken; // 1s ••to•• 1min ••to•• TotalTime
 export const TOKEN_DURATION = { ms: tokenDuration, s: tokenDuration / 1000 };
-export const TOKEN_LABEL = `msp-token__`;
+export const TOKEN_LABEL = `srbeats-token__`;
