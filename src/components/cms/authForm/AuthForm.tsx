@@ -4,13 +4,13 @@ import { Navigate } from 'react-router-dom';
 
 // ==> Packages
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Spin, Alert } from 'antd';
+import { Button, Form, Spin, Alert } from 'antd';
 
 // ==> Project Imports
 import { LoginArgs, RegisterArgs, authAPI } from 'apis/authAPI';
 import { useForm } from 'hooks';
 import routes from 'routes';
-import { Card } from 'components';
+import { Card, Input } from 'components';
 import { TOKEN_LABEL } from 'config';
 
 /**

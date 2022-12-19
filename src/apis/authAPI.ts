@@ -65,7 +65,6 @@ const authAPI = {
 			url: `${routes.SERVER_URL}${routes.SERVER_AUTH}${routes.SERVER_AUTH_REGISTER}`,
 		})
 			.then(({ data }) => {
-				console.log({ data });
 				if (successCallback) successCallback(data);
 			})
 			.catch((e) => {
@@ -100,14 +99,12 @@ const authAPI = {
 
 		/** Ensure existing token is in headers */
 		apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-		console.log('checking...');
 
 		return apiInstance({
 			method: 'GET',
 			url: `${routes.SERVER_URL}${routes.SERVER_AUTH}${routes.SERVER_AUTH_VERIFY_TOKEN}`,
 		})
 			.then(({ data }) => {
-				console.log({ data });
 				/** Pass token to set valid token in redux */
 				if (data.token) verifyCallback(token);
 			})
