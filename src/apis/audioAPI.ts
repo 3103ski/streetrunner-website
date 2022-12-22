@@ -34,10 +34,12 @@ const audioAPI = {
 				if (errorCallback) errorCallback(errors);
 			});
 	},
-	fetchSongs() {
+	fetchSongs(query?: string) {
 		return apiInstance({
 			method: 'GET',
-			url: `${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_MUSIC}`,
+			url: `${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_MUSIC}${
+				query ? `?${query}` : ''
+			}`,
 		})
 			.then(({ data }) => {
 				console.log(data);

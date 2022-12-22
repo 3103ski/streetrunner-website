@@ -139,7 +139,7 @@ const ManageDiscographyProvider = (props: any) => {
 	}
 
 	async function fetchAudio() {
-		let { songs } = await audioAPI.fetchSongs();
+		let { songs } = await audioAPI.fetchSongs('&nominated=true');
 
 		let albums = [] as Album[];
 		let albumIds = [] as string[];

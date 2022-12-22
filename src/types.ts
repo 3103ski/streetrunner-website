@@ -45,12 +45,17 @@ export type Song = {
 	year: number;
 	//
 	useAlbumPhoto: boolean;
-	nominationStatus: 'winner' | 'nominated' | 'none'; // default 'none'
+	nominatedStatus: 'winner' | 'nominated' | 'none'; // default 'none'
 	nominatedForLabel?: string;
 	nominatedFor?: 'Song' | 'Album' | string;
 
 	isRIAACertified: boolean; // default false
+	certifiedFor?: 'Song' | 'album';
 	//
 	lastUpdated: string;
 	createdAt: string;
 };
+
+export interface AudioPanelCollection {
+	[x: string]: Song[];
+}

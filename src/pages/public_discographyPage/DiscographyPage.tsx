@@ -1,14 +1,28 @@
+// ==> React
+import * as React from 'react';
+
 // ==> Project Imports
 import { SongListItem, Overlay } from 'components';
 import { ContentCol, Footer, Spacer, ScrollToTop } from 'layout';
 import { DiscographyHeader } from 'assets';
-
-import { songs } from 'mockdata/mockSongs';
+import { Song } from 'types';
+import { audioAPI } from 'apis/audioAPI';
 
 // Component
 import Style from './discographyPage.module.scss';
 
 const DiscographyPage = () => {
+	const [songs, setSongs] = React.useState<null | Song[]>(null);
+
+	async function fetchSongs() {
+		let { songs } = await audioAPI.fetchSongs();
+		if (songs) setSongs(songs);
+	}
+
+	React.useEffect(() => {
+		if (!songs) fetchSongs();
+	}, [songs]);
+
 	const Stat = ({ count, label }: { count: number; label: string }) => {
 		return (
 			<div className={Style.Stat}>
@@ -35,22 +49,27 @@ const DiscographyPage = () => {
 			<div className={Style.StatBarOuter}>
 				<ContentCol padding='30px 0 '>
 					<div className={Style.StatBarInner}>
-						<Stat count={137} label={'TRACKS'} />
-						<Stat count={24} label={'RIAA CERTS'} />
+						<Stat count={songs ? songs.length : 0} label={'TRACKS'} />
+						<Stat
+							count={songs ? songs.filter((s: Song) => s.isRIAACertified).length : 0}
+							label={'RIAA CERTS'}
+						/>
 					</div>
 				</ContentCol>
 			</div>
 
 			<ContentCol>
-				{songs.map((song, i) => (
-					<SongListItem
-						title={`${song.nominationStatus ? `${song.nominationStatus} • ` : ''}${song.title}${
-							song.year ? ` • ${song.year}` : ''
-						}`}
-						subtitle={`${song.artist}`}
-						lastItem={i === songs.length - 1}
-					/>
-				))}
+				{songs &&
+					songs.map((song, i) => (
+						<SongListItem
+							key={song._id}
+							song={song}
+							size='small'
+							title={`${song.title}`}
+							subtitle={`By ${song.artist}`}
+							lastItem={i === songs.length - 1}
+						/>
+					))}
 			</ContentCol>
 
 			<Footer />
