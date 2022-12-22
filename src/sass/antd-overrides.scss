@@ -13,6 +13,16 @@ span {
 	color: white !important;
 }
 
+.ant-notification-notice-close {
+	svg {
+		color: map-get($theme-colors, color_themePrimary) !important;
+	}
+}
+
+.ant-spin-text {
+	color: white !important;
+}
+
 //-----------------------------------
 // ==> Menu Tabs
 //-----------------------------------

@@ -31,7 +31,20 @@ const audioAPI = {
 			})
 			.catch((errors) => {
 				console.log(errors);
-				if (errorCallback) errorCallback(data);
+				if (errorCallback) errorCallback(errors);
+			});
+	},
+	fetchSongs() {
+		return apiInstance({
+			method: 'GET',
+			url: `${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_MUSIC}`,
+		})
+			.then(({ data }) => {
+				console.log(data);
+				return data;
+			})
+			.catch((errors) => {
+				console.log(errors);
 			});
 	},
 };

@@ -19,7 +19,8 @@ export type Album = {
 	// required
 	_id: string;
 	title: string;
-	songs: Song[];
+	artist: string;
+	songs?: Song[];
 	lastUpdated: string;
 	createdAt: string;
 };
@@ -35,7 +36,7 @@ export type AudioUpload = {
 };
 
 export type Song = {
-	album?: Album;
+	album: Album;
 	photo?: Photo;
 	_id: string;
 	audio: AudioUpload;
@@ -43,7 +44,7 @@ export type Song = {
 	artist: string;
 	year: number;
 	//
-	useAlbumArt: boolean;
+	useAlbumPhoto: boolean;
 	nominationStatus: 'winner' | 'nominated' | 'none'; // default 'none'
 	nominatedForLabel?: string;
 	nominatedFor?: 'Song' | 'Album' | string;

@@ -5,6 +5,7 @@ export const ICON_VIDEO = 'ic:baseline-ondemand-video';
 export const ICON_PLAY_BUTTON = 'material-symbols:play-circle';
 export const ICON_SETTINGS = 'material-symbols:settings-rounded';
 export const ICON_LOGOUT = 'humbleicons:logout';
+export const ICON_CLOSE = 'ri:close-circle-line';
 
 // Brands
 export const ICON_INSTAGRAM = 'ph:instagram-logo';

@@ -3,9 +3,8 @@ import * as React from 'react';
 // Project
 import { Song, Album } from 'types';
 import { audioAPI } from 'apis/audioAPI';
-import { songs, MockAlbums } from 'mockdata';
+import { MockAlbums } from 'mockdata';
 import { updateObj } from 'util/index';
-// import { NewSongInputInterface } from 'components/cms/cms-types';
 
 // Contexts
 import actions from './actionTypes';
@@ -22,11 +21,16 @@ interface ContextInterface {
 
 	// Context Methods
 	handleUploadNewSong: Function;
+	toggleIsLoading: Function;
+	toggleIsAddingSong: Function;
 }
 
 interface ActionsInterface {
 	type: string;
 	song?: Song;
+	songs?: Song[];
+	album?: Album;
+	albums?: Album[];
 	isAddingSong?: boolean;
 	isLoading?: boolean;
 	error?: any;
@@ -34,7 +38,7 @@ interface ActionsInterface {
 
 const initialState: ContextInterface = {
 	// Context Data
-	songs: [...songs] as Song[],
+	songs: [] as Song[],
 	albums: [...MockAlbums] as Album[],
 
 	// Context State
@@ -44,24 +48,27 @@ const initialState: ContextInterface = {
 
 	// Context Methods
 	handleUploadNewSong: () => null,
+	toggleIsLoading: () => null,
+	toggleIsAddingSong: () => null,
 };
 
 const ManageDiscographyContext = React.createContext(initialState);
 
-const DiscographyReducer = (state: any, { type, song, isAddingSong, isLoading, error }: ActionsInterface) => {
-	let songs;
-
+const DiscographyReducer = (
+	state: any,
+	{ type, song, songs, album, isAddingSong, isLoading, albums, error }: ActionsInterface
+) => {
 	switch (type) {
+		case actions.SET_SONGS:
+			return updateObj(state, { songs });
+		case actions.SET_ALBUMS:
+			return updateObj(state, { albums });
 		case actions.SET_ERROR:
 			return updateObj(state, { error });
 		case actions.TOGGLE_IS_ADDING_SONG:
-			return updateObj(state, {
-				isAddingSong: isAddingSong ? isAddingSong : !state.isAddingSong,
-			});
+			return updateObj(state, { isAddingSong });
 		case actions.TOGGLE_IS_LOADING:
-			return updateObj(state, {
-				isLoading: isLoading ? isLoading : !state.isLoading,
-			});
+			return updateObj(state, { isLoading });
 		case actions.REMOVE_SONG:
 			songs = !song ? songs : state.songs.filter((s: Song) => s._id !== song._id);
 			return updateObj(state, {
@@ -74,7 +81,11 @@ const DiscographyReducer = (state: any, { type, song, isAddingSong, isLoading, e
 			});
 		case actions.ADD_SONG:
 			return updateObj(state, {
-				songs: !song ? songs : [...state.songs, song],
+				songs: !song ? songs : [song, ...state.songs],
+			});
+		case actions.ADD_ALBUM:
+			return updateObj(state, {
+				albums: !album ? state.albums : [...state.albums, album],
 			});
 		default:
 			return state;
@@ -84,38 +95,85 @@ const DiscographyReducer = (state: any, { type, song, isAddingSong, isLoading, e
 const ManageDiscographyProvider = (props: any) => {
 	const [state, dispatch] = React.useReducer(DiscographyReducer, ManageDiscographyContext);
 
-	async function handleUploadNewSong(data: any) {
-		dispatch({ type: actions.TOGGLE_IS_LOADING, isLoading: true });
-		console.log({ data });
+	async function handleUploadNewSong(data: any, success: Function, handleError: Function) {
+		function successCallback(data: any) {
+			const { album, song } = data;
+			if (album && song) {
+				dispatch({ type: actions.ADD_SONG, song });
+				dispatch({ type: actions.ADD_ALBUM, album });
+			}
+
+			success();
+			toggleIsLoading(false);
+			toggleIsAddingSong(false);
+		}
+
+		function errorCallback(error: any) {
+			toggleIsLoading(false);
+			handleError(error);
+		}
 
 		if (data.audio) {
+			toggleIsLoading(true);
 			const multipart_form_data = new FormData();
-
-			await multipart_form_data.append('artist', data.artist);
-			await multipart_form_data.append('audio', data.audio);
-			await multipart_form_data.append('certified', data.certified);
-			await multipart_form_data.append('certifiedFor', data.certifiedFor);
-			await multipart_form_data.append('existingAlbum', data.existingAlbum);
-			await multipart_form_data.append('newAlbumTitle', data.newAlbumTitle);
-			await multipart_form_data.append('newAlbumPhoto', data.newAlbumPhoto);
-			await multipart_form_data.append('newAlbumYear', data.newAlbumYear);
-			await multipart_form_data.append('nomindated', data.nominated);
-			await multipart_form_data.append('nomindatedFor', data.nominatedFor);
-			await multipart_form_data.append('nomindatedStatus', data.nominatedStatus);
-			await multipart_form_data.append('photo', data.photo);
-			await multipart_form_data.append('title', data.title);
-			await multipart_form_data.append('useAlbumYear', data.useAlbumYear);
-			await multipart_form_data.append('useAlbumPhoto', data.useAlbumPhoto);
-			await multipart_form_data.append('useAlbumArtist', data.useAlbumArtist);
-			await multipart_form_data.append('year', data.year);
-
-			return audioAPI.addNewSong({ data: multipart_form_data });
+			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
+			return audioAPI.addNewSong({ data: multipart_form_data, successCallback, errorCallback });
 		}
 	}
 
+	function toggleIsLoading(isLoading: boolean) {
+		console.log({ isLoading });
+		return dispatch({ type: actions.TOGGLE_IS_LOADING, isLoading });
+	}
+
+	function toggleIsAddingSong(isAddingSong: boolean) {
+		return dispatch({ type: actions.TOGGLE_IS_ADDING_SONG, isAddingSong });
+	}
+
+	function addSong(song: Song) {
+		return dispatch({ type: actions.ADD_SONG, song });
+	}
+
+	function removeSong(song: Song) {
+		return dispatch({ type: actions.REMOVE_SONG, song });
+	}
+
+	async function fetchAudio() {
+		let { songs } = await audioAPI.fetchSongs();
+
+		let albums = [] as Album[];
+		let albumIds = [] as string[];
+
+		await songs.map((song: Song) => {
+			if (!albumIds.includes(song.album._id)) {
+				albumIds.push(song.album._id);
+				albums.push(song.album);
+			}
+			return null;
+		});
+
+		console.log({ songs, albums });
+		dispatch({ type: actions.SET_SONGS, songs });
+		dispatch({ type: actions.SET_ALBUMS, albums });
+		return songs;
+	}
+
+	React.useEffect(() => {
+		fetchAudio();
+	}, []);
+
 	return (
 		<ManageDiscographyContext.Provider
-			value={{ songs: state.songs, albums: state.albums, handleUploadNewSong }}
+			value={{
+				// albums: state.albums,
+				...state,
+				songs: state.songs ? state.songs : [],
+				addSong,
+				handleUploadNewSong,
+				removeSong,
+				toggleIsAddingSong,
+				toggleIsLoading,
+			}}
 			{...props}
 		/>
 	);

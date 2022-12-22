@@ -3,16 +3,10 @@
 .Wrapper {
 	@include flex-start-center;
 	width: 100%;
-	padding: 20px 20px;
 	border-bottom: 1px solid map-get($theme-colors, color_themePrimary);
 
 	&[data-is-last-item='1'] {
 		border-bottom: none !important;
-	}
-
-	.Photo {
-		width: 55px;
-		border-radius: 10px;
 	}
 
 	.InfoWrapper {
@@ -52,6 +46,52 @@
 
 	&:hover {
 		background-color: map-get($theme-colors, color_themePrimaryOpaq) !important;
+	}
+
+	&[data-size='default'] {
+		padding: 20px 20px;
+
+		.Photo {
+			width: 55px;
+			border-radius: 10px;
+		}
+
+		.PlayWrapper {
+			svg {
+				font-size: 4rem;
+			}
+		}
+	}
+
+	&[data-size='small'] {
+		@include flex-center-center;
+		padding: 0 10px;
+
+		.Photo {
+			width: 30px;
+			border-radius: 3px;
+		}
+
+		.PlayWrapper {
+			svg {
+				font-size: 2rem;
+			}
+		}
+
+		.InfoWrapper {
+			padding: 0 20px;
+
+			.Title {
+				font-size: 0.8rem;
+				line-height: 1rem;
+				margin-bottom: 4px;
+			}
+
+			.SubTitle {
+				font-size: 0.65rem;
+				line-height: 0.7rem;
+			}
+		}
 	}
 
 	@media only screen and (max-width: 576px) {

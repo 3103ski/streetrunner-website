@@ -17,7 +17,6 @@ export default function useForm({ callback, initialState }: UseFormProps) {
 	/** Handles change to values onChange of an input */
 	const onChange = (e: any) => {
 		let newValues;
-		console.log({ e });
 		switch (e.target.type) {
 			case 'file':
 				newValues = updateObj(values, { [e.target.name]: e.target.files[0] });
@@ -32,14 +31,11 @@ export default function useForm({ callback, initialState }: UseFormProps) {
 				newValues = updateObj(values, { [e.target.name]: e.target.value });
 				break;
 		}
-		console.log({ newValues });
 		setValues(newValues);
 	};
 
 	const setValue = (obj: any) => {
 		let newValues = updateObj(values, obj);
-
-		console.log(newValues);
 
 		setValues(newValues);
 	};

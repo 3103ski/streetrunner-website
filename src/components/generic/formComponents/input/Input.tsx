@@ -1,6 +1,6 @@
 import { Input } from 'antd';
 
-import Style from './shared.module.scss';
+import Style from './input.module.scss';
 
 interface CustomInputInterface {
 	[s: string]: any;

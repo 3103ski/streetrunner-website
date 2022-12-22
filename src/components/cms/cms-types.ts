@@ -19,3 +19,13 @@ export interface NewSongInputInterface {
 	useAlbumArtist?: boolean;
 	year: number | null;
 }
+
+export interface GeneralInputInterface {
+	name: string;
+	placeholder?: string;
+	label?: string;
+	displayDependancy?: string;
+	checked?: Boolean;
+	onChange?: Function;
+	type?: string;
+}

@@ -17,7 +17,7 @@ const songs: Song[] = [
 		isRIAACertified: true,
 		audio: mockUploads[0],
 		album: mockAlbums[0],
-		useAlbumArt: true,
+		useAlbumPhoto: true,
 	},
 	{
 		_id: 'h9v835th925tn2365vb7b23584',
@@ -29,7 +29,7 @@ const songs: Song[] = [
 		isRIAACertified: true,
 		audio: mockUploads[1],
 		album: mockAlbums[1],
-		useAlbumArt: true,
+		useAlbumPhoto: true,
 	},
 	{
 		_id: 'h9v835th925tn2365vb7b23584',
@@ -41,7 +41,7 @@ const songs: Song[] = [
 		isRIAACertified: true,
 		audio: mockUploads[2],
 		album: mockAlbums[2],
-		useAlbumArt: true,
+		useAlbumPhoto: true,
 	},
 	{
 		_id: 'h9v835th925tn2365vb7b23584',
@@ -53,7 +53,7 @@ const songs: Song[] = [
 		isRIAACertified: true,
 		audio: mockUploads[1],
 		album: mockAlbums[3],
-		useAlbumArt: true,
+		useAlbumPhoto: true,
 	},
 ] as Song[];
 

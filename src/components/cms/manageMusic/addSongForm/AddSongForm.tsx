@@ -1,21 +1,18 @@
 // ==> React
 import * as React from 'react';
-import ReactDOM from 'react-dom/client';
 
 // ==> Packages
-import { Form, Radio, Checkbox, Tabs, Select, Empty, Row, Col } from 'antd';
+import { Form, Radio, Checkbox, Tabs, Select, Empty, Row, Col, Spin } from 'antd';
 
 // ==> Project
-import { NewSongInputInterface } from 'components/cms/cms-types';
-import { Input, Button } from 'components';
+import { NewSongInputInterface, GeneralInputInterface } from 'components/cms/cms-types';
+import { Input, Button, PhotoInput, IconifyIcon, ICON_CLOSE } from 'components';
 import { ManageDiscographyContext } from 'contexts';
 import { useForm } from 'hooks';
 import { formatFileSize } from 'util/index';
 
 // ==> Component
 import Style from './addSongForm.module.scss';
-
-import { MockAlbums } from 'mockdata';
 
 const initialState: NewSongInputInterface = {
 	artist: '',
@@ -38,99 +35,88 @@ const initialState: NewSongInputInterface = {
 	useAlbumYear: true,
 	year: null,
 };
-
-const AddSongForm = () => {
+interface AddSongInterface {
+	notificationAPI: any;
+}
+const AddSongForm = ({ notificationAPI }: AddSongInterface) => {
+	// =>> Set up form data for use by inputs and Form Element
 	const { values, onChange, setValue } = useForm({ initialState });
-	const { handleUploadNewSong } = React.useContext(ManageDiscographyContext);
-
 	const [form] = Form.useForm();
+	const [errors, setErrors] = React.useState<any>({});
 
-	const [newAlbumPhotoPreview, setNewAlbumPhotoSource] = React.useState<any>('');
-	const [newSongPhotoPreview, setSongPhotoSource] = React.useState<any>('');
+	// ==> Setup forms submission protocol
+	const { handleUploadNewSong, isLoading, toggleIsAddingSong, albums } = React.useContext(ManageDiscographyContext);
 
 	const onSubmit = () => {
-		/**
-		 * Will check to see if song photo should be sent vie 'useAlbumPhoto' flag.
-		 * It is easier to dump it here than programatically clear or replace the input field.
-		 */
+		// TODO :: VALIDATE SONG VALUES BEFORE UPLOAD
 		let payload = values;
 		if (payload.useAlbumPhoto === true) payload.photo = '';
-		handleUploadNewSong(payload);
+		handleUploadNewSong(payload, successCallback, errorCallback);
 	};
 
-	const photoUploadSelection = (e: any, key: string) => {
-		onChange(e);
+	// Preview Sources for photo selection inputs. Pass useState setter as callback into 'setPhotoPreviewResult' and use useState var as src in preview elements.
+	const [albumPhotoPreview, setAlbumPhotoPreview] = React.useState<any>('');
+	const [songPhotoPreview, setSongPhotoPreview] = React.useState<any>('');
 
-		const file = e.target.files[0];
-		const reader = new FileReader();
+	function errorCallback(errors: any) {
+		setErrors(errors.response.data.errors);
+	}
 
-		reader.readAsDataURL(file);
-		reader.onloadend = () => {
-			switch (key) {
-				case 'album':
-					setNewAlbumPhotoSource(reader.result);
-					break;
-				case 'song':
-				default:
-					setSongPhotoSource(reader.result);
-					break;
-			}
-		};
-	};
+	function successCallback() {
+		return notificationAPI.success({
+			duration: 1,
+			message: 'Success',
+			description: 'Song successfully added to discography!',
+			placement: 'top',
+		});
+	}
 
+	React.useEffect(() => {
+		if (errors) {
+			Object.entries(errors).map((error) => {
+				let message = error[0] as string;
+				let description = error[1] as string;
+				return notificationAPI.error({
+					duration: 2,
+					message,
+					description,
+					placement: 'top',
+				});
+			});
+
+			setErrors(null);
+		}
+	}, [notificationAPI, errors]);
+
+	/**
+	 * A function that will clean out new album data if the user switches over to use an existing album.
+	 * Do not want to send unecessary data.
+	 */
 	const handleAlbumTabClick = () => {
 		let albumResetInfo = { newAlbumTitle: '', newAlbumPhoto: '', newAlbumYear: null, existingAlbum: null };
 		form.setFieldsValue(albumResetInfo);
-		setNewAlbumPhotoSource('');
+		setAlbumPhotoPreview('');
 		setValue(albumResetInfo);
 	};
 
-	const handleResetFileInput = (fileKey: string, resetCallback?: null | Function) => {
-		// Before 'onChange'; must reset file input to not break on changing value in form state.
-		// To reset file input, will replace with new empy file input
-		let inputWrapperParent = document.getElementById(`fileInputOuter_${fileKey}`); // Ref parent element
-		let existingInputEl = document.getElementById(`fileInputWrapper_${fileKey}`); // Ref existing photo by custom ID
+	/**
+	 * ----------------------------------------------------------------------------------------------------------
+	 * ----------------------------------------------------------------------------------------------------------
+	 * ----------------------------------------->> FORM SECTIONS <<----------------------------------------------
+	 * ----------------------------------------------------------------------------------------------------------
+	 * ----------------------------------------------------------------------------------------------------------
+	 */
 
-		if (inputWrapperParent && existingInputEl) {
-			// if checked, photo input should be reset with new empty input
-			if (existingInputEl) existingInputEl.remove(); // Remove potentially populated file input
+	/**
+	 * --------
+	 * ADDING/SELECTING ALBUM(or EP)
+	 * --------
+	 * - User should be able to add a new album along with a song, or add their sone to an existing
+	 *   album previously added with a song
+	 */
 
-			let newInputEl = document.createElement('div') as HTMLElement; // create new inputWrapper
-			newInputEl.id = `fileInputWrapper_${fileKey}`; // assign ID used by this function to later remove again if necessary
-			newInputEl.style.display = 'none';
-			inputWrapperParent.insertAdjacentElement('beforeend', newInputEl); // Add new inputWrapper to inputParent
-
-			let newInputRoot = ReactDOM.createRoot(newInputEl); // create react Root ref to input wrapper
-
-			// Rest form values
-			setValue({ [fileKey]: '' });
-			if (resetCallback) resetCallback();
-
-			// Create new react element to replace what we removed
-			let newJSXElement = React.createElement(() => (
-				<Form>
-					<Form.Item name={fileKey}>
-						<Input
-							id={'fileSelect_photo'}
-							type='file'
-							onChange={(e: React.SyntheticEvent) => photoUploadSelection(e, 'song')}
-							name={fileKey}
-							value={values.photo}
-						/>
-					</Form.Item>
-				</Form>
-			));
-
-			// render empty file input into new removable wrapper
-			newInputRoot.render(newJSXElement);
-		}
-	};
-
-	//------------------------
-	// ==> FORM SECTIONS
-	//------------------------
 	const albumDetailsSection = (
-		<>
+		<div className={Style.FormSection}>
 			<h1>Release/Album Details</h1>
 			<Tabs
 				defaultActiveKey='tab__new_album'
@@ -144,55 +130,49 @@ const AddSongForm = () => {
 						label: `New Album`,
 						key: `tab__new_album`,
 						children: (
-							<>
-								<Row>
-									<Col span={8}>
-										<PhotoPreview
-											preview={newAlbumPhotoPreview}
-											onClick={() => document.getElementById('fileSelect_newAlbumPhoto')?.click()}
-										/>
-									</Col>
-									<Col span={16}>
-										<Form.Item name='newAlbumTitle'>
-											<Input
-												onChange={onChange}
-												value={values.newAlbumTitle}
-												placeholder='Album Title'
-												name='newAlbumTitle'
-											/>
-										</Form.Item>
-										<Form.Item name='newAlbumArtist'>
-											<Input
-												onChange={onChange}
-												value={values.newAlbumArtist}
-												placeholder='Album Artist'
-												name='newAlbumArtist'
-											/>
-										</Form.Item>
-										<Form.Item name='newAlbumYear'>
-											<Input
-												onChange={onChange}
-												type='number'
-												value={values.newAlbumYear}
-												placeholder='Album Year'
-												name='newAlbumYear'
-											/>
-										</Form.Item>
-									</Col>
-								</Row>
-								<div className={Style.NewPhotoInputWrapper}>
-									<Form.Item name='newAlbumPhoto' style={{ display: 'none' }}>
-										<Input
-											type='file'
-											id={'fileSelect_newAlbumPhoto'}
-											onChange={(e: React.SyntheticEvent) => photoUploadSelection(e, 'album')}
-											placeholder='Album Photo'
+							<Row>
+								<Col span={8}>
+									<PhotoInput.PhotoPreview
+										preview={albumPhotoPreview}
+										name='newAlbumPhoto'
+										onClick={() => PhotoInput.clickPhotoInput('newAlbumPhoto')}
+									/>
+									<PhotoInput.ResetWrapper name='newAlbumPhoto'>
+										<PhotoInput
 											name='newAlbumPhoto'
-											value={values.newAlbumPhoto}
+											setterCallback={setAlbumPhotoPreview}
+											onChange={onChange}
+										/>
+									</PhotoInput.ResetWrapper>
+								</Col>
+								<Col span={16}>
+									<Form.Item name={'newAlbumTitle'}>
+										<Input
+											onChange={onChange}
+											value={values['newAlbumTitle']}
+											placeholder={'Album Title'}
+											name={'newAlbumTitle'}
 										/>
 									</Form.Item>
-								</div>
-							</>
+									<Form.Item name={'newAlbumArtist'}>
+										<Input
+											onChange={onChange}
+											value={values['newAlbumArtist']}
+											placeholder={'Album Artist'}
+											name={'newAlbumArtist'}
+										/>
+									</Form.Item>
+									<Form.Item name={'newAlbumYear'}>
+										<Input
+											type='number'
+											onChange={onChange}
+											value={values['newAlbumYear']}
+											placeholder={'Album Year'}
+											name={'newAlbumYear'}
+										/>
+									</Form.Item>
+								</Col>
+							</Row>
 						),
 					},
 					{
@@ -214,7 +194,7 @@ const AddSongForm = () => {
 								filterSort={(optionA, optionB) =>
 									(optionA?.key ?? '').toLowerCase().localeCompare((optionB?.key ?? '').toLowerCase())
 								}
-								options={MockAlbums.map((album) => ({
+								options={albums.map((album) => ({
 									key: album.title + album._id,
 									value: album._id,
 									label: (
@@ -229,87 +209,91 @@ const AddSongForm = () => {
 					},
 				]}
 			/>
-		</>
+		</div>
 	);
+
+	/**
+	 * --------
+	 * => INPUT SONG DETAILS
+	 * --------
+	 * -
+	 */
+
+	const songDetailsCheckBoxed: GeneralInputInterface[] = [
+		{
+			name: 'useAlbumYear',
+			label: 'Use Album Year',
+		},
+		{
+			name: 'useAlbumArtist',
+			label: 'Use Album Artist',
+		},
+		{
+			name: 'useAlbumPhoto',
+			label: 'Use Album Photo',
+			onChange: (e: any) => {
+				if (e.target && e.target.checked === true)
+					PhotoInput.handleResetPhotoInput('photo', setSongPhotoPreview, setValue);
+				onChange(e);
+			},
+		},
+	];
 
 	const songDetailsSection = (
-		<>
+		<div className={Style.FormSection}>
 			<h1>Song Details</h1>
-			<div className={Style.NewPhotoInputWrapper} id='fileInputOuter_photo'>
-				<Row style={{ width: '100%' }}>
-					<Col span={values.useAlbumPhoto ? 0 : 6}>
-						<PhotoPreview
-							preview={newSongPhotoPreview}
-							onClick={() => document.getElementById('fileSelect_photo')?.click()}
-						/>
-					</Col>
-					<Col span={values.useAlbumPhoto ? 24 : 18}>
-						<p>Shared Details</p>
-						<Checkbox name='useAlbumYear' checked={values.useAlbumYear} onChange={onChange}>
-							Use album year
-						</Checkbox>
-						<Checkbox name='useAlbumArtist' checked={values.useAlbumArtist} onChange={onChange}>
-							Use album Artist
-						</Checkbox>
+			<Row style={{ width: '100%' }}>
+				<Col span={values.useAlbumPhoto ? 0 : 6}>
+					{/* Adding photo for the new song AS SONG PHOTO - not album photo - user can leave this blank and use the photo from album */}
+					<PhotoInput.PhotoPreview preview={songPhotoPreview} name='photo' />
+					<PhotoInput.ResetWrapper name='photo'>
+						<PhotoInput name='photo' setterCallback={setSongPhotoPreview} onChange={onChange} />
+					</PhotoInput.ResetWrapper>
+				</Col>
 
+				<Col span={values.useAlbumPhoto ? 24 : 18}>
+					<p>Shared Details</p>
+					{songDetailsCheckBoxed.map((checkbox) => (
 						<Checkbox
-							name='useAlbumPhoto'
-							checked={values.useAlbumPhoto}
-							onChange={(e) => {
-								if (e.target.checked === true)
-									handleResetFileInput('photo', () => setSongPhotoSource(''));
-								onChange(e);
-							}}>
-							Use album Photo
+							key={`${Math.random()}`}
+							name={checkbox.name}
+							checked={values[checkbox.name]}
+							onChange={checkbox.onChange ? checkbox.onChange : onChange}>
+							{checkbox.label}
 						</Checkbox>
+					))}
 
-						<Form.Item name='title' rules={[{ required: true, message: 'Song Title is required' }]}>
-							<Input onChange={onChange} value={values.title} placeholder='Song Title' name='title' />
-						</Form.Item>
-
-						{!values.useAlbumArtist && (
-							<Form.Item name='artist' rules={[{ required: true, message: 'Artist is required' }]}>
-								<Input onChange={onChange} value={values.artist} placeholder='Artist' name='artist' />
-							</Form.Item>
-						)}
-
-						{!values.useAlbumYear && (
-							<Form.Item name='year' rules={[{ required: true, message: 'Year is required' }]}>
-								<Input
-									onChange={onChange}
-									value={values.year}
-									placeholder='Year'
-									name='year'
-									type='number'
-								/>
-							</Form.Item>
-						)}
-					</Col>
-				</Row>
-				<div id='fileInputWrapper_photo' style={{ display: 'none' }}>
-					<Form.Item name='photo'>
-						<Input
-							id={'fileSelect_photo'}
-							type='file'
-							onChange={(e: React.SyntheticEvent) => photoUploadSelection(e, 'song')}
-							placeholder='Song Photo'
-							name='photo'
-							value={values.photo}
-						/>
+					<Form.Item name='title' rules={[{ required: true, message: 'Song Title is required' }]}>
+						<Input onChange={onChange} value={values.title} placeholder='Song Title' name='title' />
 					</Form.Item>
-				</div>
-			</div>
-		</>
+
+					<Form.Item name='artist' style={{ display: values.useAlbumArtist ? 'none' : '' }}>
+						<Input onChange={onChange} value={values.artist} placeholder='Artist' name='artist' />
+					</Form.Item>
+
+					<Form.Item name='year' style={{ display: values.useAlbumYear ? 'none' : '' }}>
+						<Input onChange={onChange} value={values.year} placeholder='Year' name='year' type='number' />
+					</Form.Item>
+				</Col>
+			</Row>
+		</div>
 	);
 
+	/**
+	 * --------
+	 * => AUDIO UPLOAD SECTION
+	 * --------
+	 * -
+	 */
 	const audioUploadSection = (
-		<div className={Style.AudioSelectWrapper}>
+		<div className={Style.FormSection}>
 			<Form.Item name='audio' style={{ display: 'none' }}>
 				<Input
 					type='file'
 					onChange={onChange}
 					placeholder='Audio'
 					name='audio'
+					accept='.mp3, .wav'
 					value={values.audio}
 					id={'fileInput_audio'}
 				/>
@@ -338,27 +322,43 @@ const AddSongForm = () => {
 		</div>
 	);
 
+	/**
+	 * --------
+	 * => RIAA CERTIFICATIONS
+	 * --------
+	 * -
+	 */
 	const certificationsSection = (
-		<>
+		<div className={Style.FormSection}>
 			<h1>RIAA</h1>
 			<Form.Item name='certified'>
 				<Checkbox name='certified' checked={values.certified} onChange={onChange}>
 					Certified
 				</Checkbox>
 			</Form.Item>
-			{values.certified && (
-				<Form.Item name='certifiedFor'>
-					<Radio.Group onChange={onChange} value={values.nominatedFor} name='certifiedFor'>
-						<Radio value={'song'}>Song</Radio>
-						<Radio value={'album'}>Album</Radio>
-					</Radio.Group>
-				</Form.Item>
-			)}
-		</>
+
+			<Form.Item name='certifiedFor' style={{ display: !values.certified ? 'none' : '' }}>
+				<Radio.Group onChange={onChange} value={values.nominatedFor} name='certifiedFor'>
+					<Radio value={'song'}>Song</Radio>
+					<Radio value={'album'}>Album</Radio>
+				</Radio.Group>
+			</Form.Item>
+		</div>
 	);
 
+	/**
+	 * --------
+	 * => AWARD NOMINATIONS
+	 * --------
+	 *
+	 * -If the song was nominated for an award, we need to collect that information.
+	 * We are asking if the nomination was for song or album, this is used for labeling in UI,
+	 * there is no album nomination attached to the album document if that nomination is for album.
+	 *
+	 */
+
 	const nominationsSection = (
-		<>
+		<div className={Style.FormSection}>
 			<h1>Nominations</h1>
 			<Form.Item name='nominated'>
 				<Checkbox name='nominated' checked={values.nominated} onChange={onChange}>
@@ -366,92 +366,71 @@ const AddSongForm = () => {
 				</Checkbox>
 			</Form.Item>
 
-			{values.nominated && (
-				<>
-					<p>Nominated For:</p>
-					<Form.Item name='nominatedFor'>
-						<Radio.Group name='nominatedFor' onChange={onChange} value={values.nominatedFor}>
-							<Radio value={'album'}>Album</Radio>
-							<Radio value={'song'}>Song</Radio>
-						</Radio.Group>
-					</Form.Item>
-					<p>Status:</p>
-					<Form.Item name='nominatedStatus'>
-						<Radio.Group name='nominatedStatus' onChange={onChange} value={values.nominatedStatus}>
-							<Radio value={'nominated'}>Nominated</Radio>
-							<Radio value={'winner'}>Won</Radio>
-						</Radio.Group>
-					</Form.Item>
-					<Form.Item
+			<div style={{ display: !values.nominated ? 'none' : '' }}>
+				<p>Nominated For:</p>
+				<Form.Item name='nominatedFor'>
+					<Radio.Group name='nominatedFor' onChange={onChange} value={values.nominatedFor}>
+						<Radio value={'album'}>Album</Radio>
+						<Radio value={'song'}>Song</Radio>
+					</Radio.Group>
+				</Form.Item>
+
+				<p>Status:</p>
+				<Form.Item name='nominatedStatus'>
+					<Radio.Group name='nominatedStatus' onChange={onChange} value={values.nominatedStatus}>
+						<Radio value={'nominated'}>Nominated</Radio>
+						<Radio value={'winner'}>Won</Radio>
+					</Radio.Group>
+				</Form.Item>
+				<Form.Item
+					name='nominatedAward'
+					rules={[{ required: values.nominated, message: 'Please include what the nomination was for' }]}>
+					<Input
+						onChange={onChange}
+						value={values.nominatedAward}
+						placeholder='What is the award?'
 						name='nominatedAward'
-						rules={[{ required: values.nominated, message: 'Please include what the nomination was for' }]}>
-						<Input
-							onChange={onChange}
-							value={values.nominatedAward}
-							placeholder='What is the award?'
-							name='nominatedAward'
-						/>
-					</Form.Item>
-				</>
-			)}
-		</>
-	);
-
-	React.useEffect(() => {
-		document.addEventListener('resize', () => console.log('heard the thing'));
-	}, []);
-
-	return (
-		<Form className={Style.FormOuter} name='add_song_form' initialValues={values} form={form}>
-			{albumDetailsSection}
-			{songDetailsSection}
-			{audioUploadSection}
-			{certificationsSection}
-			{nominationsSection}
-			<Button onClick={onSubmit}>Add To Discography</Button>
-		</Form>
-	);
-};
-
-const PhotoPreview = ({ preview, onClick }: { preview: any; onClick?: any; id?: string }) => {
-	const setPreviewHeights = React.useCallback(() => {
-		// const wrapper = document.getElementById(id);
-		const previews = Array.from(document.querySelectorAll('.photo-file-input-preview')) as HTMLElement[];
-		console.log({ previews });
-
-		previews.map((wrapper) => {
-			if (wrapper) {
-				let width = wrapper.getBoundingClientRect().width;
-				let pad: string | number = document.defaultView
-					?.getComputedStyle(wrapper)
-					.paddingRight.split('px')[0] as string;
-
-				if (pad) {
-					pad = parseInt(pad) as number;
-					wrapper.style.height = `${width - pad * 2}px`;
-				}
-			}
-			return null;
-		});
-	}, []);
-
-	window.onresize = setPreviewHeights;
-
-	React.useEffect(() => {
-		setPreviewHeights();
-	}, []);
-
-	return (
-		<div className={`${Style.NewPhotoPreview} photo-file-input-preview`} onClick={onClick}>
-			{preview === '' ? (
-				<div className={Style.NoPreview}>
-					<p>Add</p>
-					<p>Photo</p>
-				</div>
-			) : (
-				<img src={preview ? preview : ''} alt='album_photo_upload_preview' />
-			)}
+					/>
+				</Form.Item>
+			</div>
 		</div>
+	);
+
+	/**
+	 * -----------------
+	 * >> RENDER FORM <<
+	 * -----------------
+	 */
+	return (
+		<>
+			{isLoading === true && (
+				<div className={Style.LoadingOverlay}>
+					<div className={Style.LoadingOverlayInner}>
+						<Spin
+							size='large'
+							spinning={true}
+							tip={'Adding Song... This may take a moment. Do not refresh or leave page.'}
+						/>
+					</div>
+				</div>
+			)}
+			<div className={Style.FormContainer}>
+				<div className={Style.CloseForm} onClick={() => toggleIsAddingSong(false)}>
+					<IconifyIcon icon={ICON_CLOSE} />
+				</div>
+				<Form className={Style.FormOuter} name='add_song_form' initialValues={values} form={form}>
+					{albumDetailsSection}
+					{songDetailsSection}
+					{audioUploadSection}
+					{certificationsSection}
+					{nominationsSection}
+					<Button onClick={onSubmit}>Add To Discography</Button>
+					<Button type='secondary' style={{ marginLeft: '10px' }} onClick={() => toggleIsAddingSong(false)}>
+						Cancel
+					</Button>
+				</Form>
+			</div>
+		</>
 	);
 };
 
