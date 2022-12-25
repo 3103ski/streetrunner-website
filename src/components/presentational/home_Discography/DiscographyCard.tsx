@@ -36,11 +36,12 @@ const RIAACertification = () => {
 					Object.entries(panels).map((panel: any) => {
 						return (
 							<Panel header={panel[0]} key={`${Math.random()}`}>
-								{panel[1].map((song: Song) => {
+								{panel[1].map((song: Song, i: number) => {
 									return (
 										<SongListItem
 											key={song._id}
 											song={song}
+											lastItem={i === panel[1].length - 1}
 											size='small'
 											title={`${song.title}`}
 											subtitle={`By ${song.artist}`}

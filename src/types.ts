@@ -59,3 +59,11 @@ export type Song = {
 export interface AudioPanelCollection {
 	[x: string]: Song[];
 }
+
+export enum PlayerStatuses {
+	STOPPED = 'stopped',
+	PLAYING = 'playing',
+	PAUSED = 'paused',
+	LOADING = 'loading',
+	ERROR = 'error',
+}

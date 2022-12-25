@@ -14,11 +14,6 @@ const ManageMusic = () => {
 	const { toggleIsAddingSong, isAddingSong, songs } = React.useContext(ManageDiscographyContext);
 	const [api, contextHolder] = notification.useNotification();
 
-	React.useEffect(() => {
-		console.log({ songs });
-		console.log({ isAddingSong });
-	}, [songs, isAddingSong]);
-
 	return (
 		<>
 			{contextHolder}
@@ -38,6 +33,7 @@ const ManageMusic = () => {
 								<SongListItem
 									size='small'
 									key={song._id}
+									showFileInfo
 									song={song}
 									lastItem={i === songs.length - 1}
 									title={song.title}

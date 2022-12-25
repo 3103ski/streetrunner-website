@@ -26,7 +26,6 @@ const audioAPI = {
 			url: `${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_MUSIC}`,
 		})
 			.then(({ data }) => {
-				console.log({ returned: data });
 				if (successCallback) successCallback(data);
 			})
 			.catch((errors) => {
@@ -42,7 +41,6 @@ const audioAPI = {
 			}`,
 		})
 			.then(({ data }) => {
-				console.log(data);
 				return data;
 			})
 			.catch((errors) => {

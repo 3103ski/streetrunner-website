@@ -9,7 +9,12 @@ interface OverlayProps {
 }
 
 const Overlay = ({ type = 'normal', color }: OverlayProps) => {
-	return <div data-type={color ? '' : type} className={Style.Wrapper}></div>;
+	return (
+		<div
+			data-type={color ? '' : type}
+			style={{ backgroundColor: color ? color : '' }}
+			className={Style.Wrapper}></div>
+	);
 };
 
 export default Overlay;

@@ -10,6 +10,7 @@
 
 const layoutGlobals = {
 	DEFAULT_MAX_WIDTH: '1400px' as string,
+	DESKTOP_PLAYER_HEIGHT: '70px' as string,
 	APP_CONTAINER_ID: 'app-container' as string,
 	VIEW_OUTER_ID: 'wrapper-outer' as string,
 	VIEW_INNER_ID: 'wrapper-inner' as string,
