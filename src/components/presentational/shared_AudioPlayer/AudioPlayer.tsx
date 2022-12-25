@@ -61,7 +61,7 @@ const AudioPlayer = () => {
 									alt='album art'
 								/>
 							</div>
-							<div className={Style.Playback}>
+							<div className={Style.Playback} id='sr-beats-playback-wrapper'>
 								<Overlay color={Style.color_themePrimaryOpaq} />
 								<div
 									className={Style.ProgressOverlay}
@@ -70,7 +70,7 @@ const AudioPlayer = () => {
 								/>
 
 								<div
-									id='sr-beats-playback'
+									id='sr-beats-progress-bar-wrapper'
 									style={{
 										height: '100%',
 										width: '100%',

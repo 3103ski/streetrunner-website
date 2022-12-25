@@ -143,10 +143,10 @@ const AudioPlayerProvider = (props: any) => {
 					let total = Math.floor(e.target.duration);
 					let currentTime = Math.floor(e.target.currentTime);
 					let percentage = Math.floor((currentTime / total) * 100);
+					let progBar = document.getElementById('sr-beats-progress-bar');
 
 					if (currentTimeRef.current) currentTimeRef.current.innerText = `${formatSeconds(currentTime)}`;
 					if (durationRef.current) durationRef.current.innerText = `${formatSeconds(total)}`;
-					let progBar = document.getElementById('sr-beats-progress-bar');
 					if (progBar) progBar.style.width = `${percentage}%`;
 				}
 			});
@@ -174,30 +174,49 @@ const AudioPlayerProvider = (props: any) => {
 
 		if (playerRef && playerRef.current && song.audio.secure_url) {
 			playerRef.current.src = song.audio.secure_url;
+			handleClickProgressBar();
 		}
 	}
 
-	const handleClickProgressBar = React.useCallback((e: any) => {
-		let progBar = document.getElementById('sr-beats-progress-bar');
-		if (progressBarOverlayRef.current && playerRef.current && progBar) {
+	const handleClickProgressBar = React.useCallback((e?: any) => {
+		// Find existing wrapper containing progress bar
+		let originalProgBarWrapperEl = document.getElementById('sr-beats-progress-bar-wrapper') as HTMLElement;
+
+		if (progressBarOverlayRef.current && playerRef.current && originalProgBarWrapperEl) {
 			let progBarRects = progressBarOverlayRef.current.getBoundingClientRect();
+			let progressBarWidth = progBarRects.width; // Grab width of progress bar
+			let clickX = !e ? 0 : e.clientX - progBarRects.left; // Find out where in the bar the click is
+			let clickProgress = !e ? 0 : clickX / progressBarWidth; // Calculate the percentage into the song that matches click
+			let songDuration = Math.floor(playerRef.current.duration); // Get the duration of the song
 
-			let progressBarWidth = progBarRects.width;
-			let clickX = e.clientX - progBarRects.left;
-			let clickProgress = clickX / progressBarWidth;
-			let songDuration = Math.floor(playerRef.current.duration);
-			let newPosition = songDuration * clickProgress;
+			let newPosition = !e ? 0 : songDuration * clickProgress; // Calculate a new playback time
 
-			let playbackWrapper = document.getElementById('sr-beats-playback') as HTMLElement;
+			let playbackWrapperEl = document.getElementById('sr-beats-playback-wrapper') as HTMLElement;
 
-			if (playbackWrapper && progBar) {
-				// TO FIX ROOT ERROR ::>> Do not check for root, remake it entirely each time, then render in the component
-				let root = null;
-				root = ReactDOM.createRoot(playbackWrapper);
-				if (root) root.render(<AudioPlayer.ProgressBar />);
-				progBar.remove();
+			if (originalProgBarWrapperEl && playbackWrapperEl) {
+				// Remove the existing wrapper containing the plaback progress bar
+				originalProgBarWrapperEl.remove();
+
+				// Create a new wrapper for a new progress bar
+				let newProgBarWrapperEl = document.createElement('div') as HTMLElement;
+				newProgBarWrapperEl.id = 'sr-beats-progress-bar-wrapper';
+				newProgBarWrapperEl.style.height = '100%';
+				newProgBarWrapperEl.style.width = '100%';
+				newProgBarWrapperEl.style.position = 'absolute';
+				newProgBarWrapperEl.style.top = '0';
+				newProgBarWrapperEl.style.left = '0';
+
+				// Add the new wrapper to the DOM
+				playbackWrapperEl.insertAdjacentElement('afterbegin', newProgBarWrapperEl);
+
+				// Make new ReactDom root out of the new wrapper
+				let root = ReactDOM.createRoot(newProgBarWrapperEl);
+
+				// Render new progress bar component into new wrapper
+				root.render(<AudioPlayer.ProgressBar />);
 			}
 
+			// Set new playback time in the audio player
 			playerRef.current.currentTime = newPosition;
 		}
 	}, []);
