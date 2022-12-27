@@ -21,8 +21,10 @@ interface ContextInterface {
 
 	// Context Methods
 	handleUploadNewSong: Function;
+	handleDeleteSong: Function;
 	toggleIsLoading: Function;
 	toggleIsAddingSong: Function;
+	removeSong: Function;
 }
 
 interface ActionsInterface {
@@ -48,8 +50,10 @@ const initialState: ContextInterface = {
 
 	// Context Methods
 	handleUploadNewSong: () => null,
+	handleDeleteSong: () => null,
 	toggleIsLoading: () => null,
 	toggleIsAddingSong: () => null,
+	removeSong: () => null,
 };
 
 const ManageDiscographyContext = React.createContext(initialState);
@@ -70,7 +74,7 @@ const DiscographyReducer = (
 		case actions.TOGGLE_IS_LOADING:
 			return updateObj(state, { isLoading });
 		case actions.REMOVE_SONG:
-			songs = !song ? songs : state.songs.filter((s: Song) => s._id !== song._id);
+			songs = !song ? songs : state.songs.filter((s: Song) => s._id.toString() !== song._id.toString());
 			return updateObj(state, {
 				songs,
 			});
@@ -95,34 +99,10 @@ const DiscographyReducer = (
 const ManageDiscographyProvider = (props: any) => {
 	const [state, dispatch] = React.useReducer(DiscographyReducer, ManageDiscographyContext);
 
-	async function handleUploadNewSong(data: any, success: Function, handleError: Function) {
-		function successCallback(data: any) {
-			const { album, song } = data;
-			if (album && song) {
-				dispatch({ type: actions.ADD_SONG, song });
-				dispatch({ type: actions.ADD_ALBUM, album });
-			}
-
-			success();
-			toggleIsLoading(false);
-			toggleIsAddingSong(false);
-		}
-
-		function errorCallback(error: any) {
-			toggleIsLoading(false);
-			handleError(error);
-		}
-
-		if (data.audio) {
-			toggleIsLoading(true);
-			const multipart_form_data = new FormData();
-			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
-			return audioAPI.addNewSong({ data: multipart_form_data, successCallback, errorCallback });
-		}
-	}
-
+	//----------------------------
+	// ==> STATE Functions
+	//----------------------------
 	function toggleIsLoading(isLoading: boolean) {
-		console.log({ isLoading });
 		return dispatch({ type: actions.TOGGLE_IS_LOADING, isLoading });
 	}
 
@@ -136,6 +116,42 @@ const ManageDiscographyProvider = (props: any) => {
 
 	function removeSong(song: Song) {
 		return dispatch({ type: actions.REMOVE_SONG, song });
+	}
+
+	//----------------------------
+	// ==> API Functions
+	//----------------------------
+	async function handleUploadNewSong(data: any, success: Function, handleError: Function) {
+		function successCallback(data: any) {
+			const { album, song } = data;
+
+			if (album && song) {
+				dispatch({ type: actions.ADD_SONG, song });
+				dispatch({ type: actions.ADD_ALBUM, album });
+			}
+
+			success();
+
+			toggleIsLoading(false);
+			toggleIsAddingSong(false);
+		}
+
+		function errorCallback(error: any) {
+			toggleIsLoading(false);
+			handleError(error);
+		}
+
+		if (data.audio) {
+			toggleIsLoading(true);
+			const multipart_form_data = new FormData();
+			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
+
+			return audioAPI.addNewSong({ data: multipart_form_data, successCallback, errorCallback });
+		}
+	}
+
+	async function handleDeleteSong(song: Song, successCallback: Function, errorCallback: Function) {
+		return audioAPI.deleteSong({ data: song, successCallback, errorCallback });
 	}
 
 	async function fetchAudio() {
@@ -170,6 +186,7 @@ const ManageDiscographyProvider = (props: any) => {
 				songs: state.songs ? state.songs : [],
 				addSong,
 				handleUploadNewSong,
+				handleDeleteSong,
 				removeSong,
 				toggleIsAddingSong,
 				toggleIsLoading,

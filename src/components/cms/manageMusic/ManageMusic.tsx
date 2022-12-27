@@ -34,6 +34,7 @@ const ManageMusic = () => {
 									size='small'
 									key={song._id}
 									showFileInfo
+									showMenu
 									song={song}
 									lastItem={i === songs.length - 1}
 									title={song.title}

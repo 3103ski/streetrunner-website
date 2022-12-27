@@ -3,7 +3,7 @@ import axios from 'axios';
 import routes from 'routes';
 import { TOKEN_LABEL } from 'config';
 
-interface AddNewSongInterface {
+interface APICallInterface {
 	data: any;
 	successCallback?: Function;
 	errorCallback?: Function;
@@ -16,7 +16,7 @@ let apiInstance = axios.create({
 });
 
 const audioAPI = {
-	addNewSong({ data, successCallback, errorCallback }: AddNewSongInterface) {
+	addNewSong({ data, successCallback, errorCallback }: APICallInterface) {
 		let token = localStorage.getItem(TOKEN_LABEL);
 		apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
@@ -30,6 +30,23 @@ const audioAPI = {
 			})
 			.catch((errors) => {
 				console.log(errors);
+				if (errorCallback) errorCallback(errors);
+			});
+	},
+	deleteSong({ data, successCallback, errorCallback }: APICallInterface) {
+		let token = localStorage.getItem(TOKEN_LABEL);
+		apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+		console.log({ data });
+		return apiInstance({
+			data,
+			method: 'DELETE',
+			url: `${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_MUSIC}?delete_song=${data._id}`,
+		})
+			.then(({ data }) => {
+				if (successCallback) successCallback(data);
+			})
+			.catch((errors) => {
+				console.log({ errors });
 				if (errorCallback) errorCallback(errors);
 			});
 	},

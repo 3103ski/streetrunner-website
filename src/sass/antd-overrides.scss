@@ -24,6 +24,49 @@ span {
 }
 
 //-----------------------------------
+// ==> Modal
+//-----------------------------------
+.ant-modal-header,
+.ant-modal-content {
+	background-color: map-get($shades, color_primaryBlack) !important;
+}
+.ant-modal-header {
+	div {
+		color: white !important;
+	}
+}
+
+.ant-modal-content {
+	border: 1px solid map-get($theme-colors, color_themeSecondary) !important;
+}
+
+//-----------------------------------
+// ==> Dropdown Menu
+//-----------------------------------
+.ant-dropdown-menu {
+	background-color: map-get($theme-colors, color_themePrimary) !important;
+	border-radius: 5px !important;
+	min-width: 80px;
+	padding: 0 !important;
+
+	li {
+		padding: 0 !important;
+		p {
+			padding: 7px 14px !important;
+			margin: 0;
+		}
+
+		&:hover {
+			background-color: map-get($theme-colors, color_themeSecondary) !important;
+		}
+	}
+}
+
+.ant-dropdown-trigger {
+	@include flex-center-center;
+}
+
+//-----------------------------------
 // ==> Menu Tabs
 //-----------------------------------
 .ant-tabs-tab {

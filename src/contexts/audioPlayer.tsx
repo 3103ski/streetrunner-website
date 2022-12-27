@@ -199,12 +199,13 @@ const AudioPlayerProvider = (props: any) => {
 
 				// Create a new wrapper for a new progress bar
 				let newProgBarWrapperEl = document.createElement('div') as HTMLElement;
+				Object.entries(AudioPlayer.ProgressWrapperStyle).map((style) => {
+					let key = style[0] as string;
+					let value = style[1] as string;
+					return newProgBarWrapperEl.setAttribute(key, value);
+				});
+
 				newProgBarWrapperEl.id = 'sr-beats-progress-bar-wrapper';
-				newProgBarWrapperEl.style.height = '100%';
-				newProgBarWrapperEl.style.width = '100%';
-				newProgBarWrapperEl.style.position = 'absolute';
-				newProgBarWrapperEl.style.top = '0';
-				newProgBarWrapperEl.style.left = '0';
 
 				// Add the new wrapper to the DOM
 				playbackWrapperEl.insertAdjacentElement('afterbegin', newProgBarWrapperEl);
@@ -262,7 +263,6 @@ const AudioPlayerProvider = (props: any) => {
 			if (state.playerStatus === PlayerStatuses.PAUSED) {
 				playerRef.current.play();
 				playerStatus = PlayerStatuses.PLAYING;
-				// should the player unmute when moved to playing status??
 			}
 
 			dispatch({ type: actions.SET_PLAYER_STATUS, playerStatus });

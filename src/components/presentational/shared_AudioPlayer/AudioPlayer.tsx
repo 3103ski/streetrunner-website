@@ -5,8 +5,9 @@ import { Image } from 'antd';
 
 // ==> Project Improts
 import { AudioPlayerContext } from 'contexts';
-import { Overlay } from 'components';
+import { selectSongPhoto } from 'util/index';
 import { PlayerStatuses } from 'types';
+import { Overlay } from 'components';
 import {
 	IconifyIcon,
 	ICON_MUSIC_NOTES,
@@ -49,17 +50,7 @@ const AudioPlayer = () => {
 					{song && (
 						<>
 							<div className={Style.Left}>
-								<Image
-									className={Style.Photo}
-									src={
-										song.useAlbumPhoto && song.album.photo
-											? song.album.photo.secure_url
-											: song.photo
-											? song.photo.secure_url
-											: ''
-									}
-									alt='album art'
-								/>
+								<Image className={Style.Photo} src={selectSongPhoto(song)} alt='album art' />
 							</div>
 							<div className={Style.Playback} id='sr-beats-playback-wrapper'>
 								<Overlay color={Style.color_themePrimaryOpaq} />
@@ -71,13 +62,7 @@ const AudioPlayer = () => {
 
 								<div
 									id='sr-beats-progress-bar-wrapper'
-									style={{
-										height: '100%',
-										width: '100%',
-										position: 'absolute',
-										top: '0',
-										left: '0',
-									}}>
+									style={AudioPlayer.ProgressWrapperStyle as React.CSSProperties}>
 									<AudioPlayer.ProgressBar />
 								</div>
 
@@ -130,6 +115,14 @@ const AudioPlayer = () => {
 			</div>
 		</div>
 	);
+};
+
+AudioPlayer.ProgressWrapperStyle = {
+	height: '100%',
+	width: '100%',
+	position: 'absolute',
+	top: '0',
+	left: '0',
 };
 
 AudioPlayer.ProgressBar = () =>
