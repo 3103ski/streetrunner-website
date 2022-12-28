@@ -50,6 +50,18 @@ const audioAPI = {
 				if (errorCallback) errorCallback(errors);
 			});
 	},
+	updateSong({ data, successCallback, errorCallback, updateId }: APICallInterface & { updateId: string }) {
+		let token = localStorage.getItem(TOKEN_LABEL);
+		apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+		return apiInstance({
+			data,
+			method: 'PUT',
+			url: `${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_MUSIC}?update_id=${updateId}`,
+		})
+			.then(({ data }) => successCallback && successCallback(data))
+			.catch((errors) => errorCallback && errorCallback(errors));
+	},
 	fetchSongs(query?: string) {
 		return apiInstance({
 			method: 'GET',

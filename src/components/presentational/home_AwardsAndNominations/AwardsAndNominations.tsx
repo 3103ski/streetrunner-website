@@ -15,7 +15,7 @@ const AwardsAndNominationsSection = () => {
 	const [panels, setPanels] = React.useState<AudioPanelCollection | null>(null);
 
 	async function fetchSongs() {
-		let data = await audioAPI.fetchSongs('&isNominated=true');
+		let data = await audioAPI.fetchSongs('&nominated=true');
 		let { songs } = data;
 
 		if (songs) {
@@ -42,7 +42,9 @@ const AwardsAndNominationsSection = () => {
 											key={song._id}
 											song={song}
 											lastItem={i === panel[1].length - 1}
-											title={`${song.nominatedStatus} • ${song.nominatedFor}`}
+											title={`${song.nominatedStatus === 'winner' ? `Winner` : `Nominated`} for ${
+												song.nominatedAward
+											} • ${song.nominatedFor?.toUpperCase()}`}
 											subtitle={`"${song.title}" by ${song.artist}`}
 										/>
 									);

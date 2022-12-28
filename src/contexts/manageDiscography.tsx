@@ -17,14 +17,19 @@ interface ContextInterface {
 	// Context State
 	isAddingSong: boolean;
 	isLoading: boolean;
+	updatingSong: null | Song;
 	error: any;
 
 	// Context Methods
+	setUpdatingSong: Function;
+
 	handleUploadNewSong: Function;
+	handleUpdateSongDetails: Function;
 	handleDeleteSong: Function;
+	removeSong: Function;
+
 	toggleIsLoading: Function;
 	toggleIsAddingSong: Function;
-	removeSong: Function;
 }
 
 interface ActionsInterface {
@@ -34,6 +39,7 @@ interface ActionsInterface {
 	album?: Album;
 	albums?: Album[];
 	isAddingSong?: boolean;
+	updatingSong?: null | Song;
 	isLoading?: boolean;
 	error?: any;
 }
@@ -45,13 +51,16 @@ const initialState: ContextInterface = {
 
 	// Context State
 	isAddingSong: false,
+	updatingSong: null,
 	isLoading: false,
 	error: null,
 
 	// Context Methods
 	handleUploadNewSong: () => null,
+	handleUpdateSongDetails: () => null,
 	handleDeleteSong: () => null,
 	toggleIsLoading: () => null,
+	setUpdatingSong: () => null,
 	toggleIsAddingSong: () => null,
 	removeSong: () => null,
 };
@@ -60,19 +69,26 @@ const ManageDiscographyContext = React.createContext(initialState);
 
 const DiscographyReducer = (
 	state: any,
-	{ type, song, songs, album, isAddingSong, isLoading, albums, error }: ActionsInterface
+	{ type, song, songs, album, isAddingSong, updatingSong, isLoading, albums, error }: ActionsInterface
 ) => {
 	switch (type) {
+		// ==>> Setters
 		case actions.SET_SONGS:
 			return updateObj(state, { songs });
 		case actions.SET_ALBUMS:
 			return updateObj(state, { albums });
 		case actions.SET_ERROR:
 			return updateObj(state, { error });
+
+		// ==>> TOGGLES
 		case actions.TOGGLE_IS_ADDING_SONG:
 			return updateObj(state, { isAddingSong });
+		case actions.TOGGLE_IS_UPDATING_DETAILS:
+			return updateObj(state, { updatingSong });
 		case actions.TOGGLE_IS_LOADING:
 			return updateObj(state, { isLoading });
+
+		// ==>> DATA CHANGES
 		case actions.REMOVE_SONG:
 			songs = !song ? songs : state.songs.filter((s: Song) => s._id.toString() !== song._id.toString());
 			return updateObj(state, {
@@ -108,6 +124,10 @@ const ManageDiscographyProvider = (props: any) => {
 
 	function toggleIsAddingSong(isAddingSong: boolean) {
 		return dispatch({ type: actions.TOGGLE_IS_ADDING_SONG, isAddingSong });
+	}
+
+	function setUpdatingSong(updatingSong: Song | null) {
+		return dispatch({ type: actions.TOGGLE_IS_UPDATING_DETAILS, updatingSong });
 	}
 
 	function addSong(song: Song) {
@@ -150,12 +170,47 @@ const ManageDiscographyProvider = (props: any) => {
 		}
 	}
 
+	async function handleUpdateSongDetails(data: any, success: Function, handleError: Function) {
+		function successCallback(data: any) {
+			const { song } = data;
+			console.log({ successSong: song });
+			if (song) {
+				dispatch({ type: actions.UPDATE_SONG, song });
+			} else {
+				console.log('Did not get a song back from api success');
+			}
+
+			success(data);
+
+			setUpdatingSong(null);
+			toggleIsLoading(false);
+		}
+
+		function errorCallback(errors: any) {
+			toggleIsLoading(false);
+			handleError(errors);
+		}
+
+		if (data && state.updatingSong) {
+			console.log({ update: state.updatingSong });
+			toggleIsLoading(true);
+			const multipart_form_data = new FormData();
+			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
+			return audioAPI.updateSong({
+				data: multipart_form_data,
+				successCallback,
+				errorCallback,
+				updateId: state.updatingSong._id,
+			});
+		}
+	}
+
 	async function handleDeleteSong(song: Song, successCallback: Function, errorCallback: Function) {
 		return audioAPI.deleteSong({ data: song, successCallback, errorCallback });
 	}
 
 	async function fetchAudio() {
-		let { songs } = await audioAPI.fetchSongs('&nominated=true');
+		let { songs } = await audioAPI.fetchSongs();
 
 		let albums = [] as Album[];
 		let albumIds = [] as string[];
@@ -181,15 +236,21 @@ const ManageDiscographyProvider = (props: any) => {
 	return (
 		<ManageDiscographyContext.Provider
 			value={{
-				// albums: state.albums,
+				// Data
 				...state,
 				songs: state.songs ? state.songs : [],
+
+				// Data updates
 				addSong,
+				removeSong,
 				handleUploadNewSong,
 				handleDeleteSong,
-				removeSong,
+				handleUpdateSongDetails,
+
+				// Toggles
 				toggleIsAddingSong,
 				toggleIsLoading,
+				setUpdatingSong,
 			}}
 			{...props}
 		/>

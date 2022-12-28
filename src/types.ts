@@ -15,6 +15,7 @@ export type Photo = {
 };
 
 export type Album = {
+	year: number;
 	photo?: Photo;
 	// required
 	_id: string;
@@ -45,11 +46,14 @@ export type Song = {
 	year: number;
 	//
 	useAlbumPhoto: boolean;
+
 	nominatedStatus: 'winner' | 'nominated' | 'none'; // default 'none'
 	nominatedForLabel?: string;
+	nominated: boolean;
+	nominatedAward: string;
 	nominatedFor?: 'Song' | 'Album' | string;
 
-	isRIAACertified: boolean; // default false
+	certified: boolean; // default false
 	certifiedFor?: 'Song' | 'album';
 	//
 	lastUpdated: string;

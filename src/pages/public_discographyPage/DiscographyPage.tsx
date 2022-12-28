@@ -50,10 +50,7 @@ const DiscographyPage = () => {
 				<ContentCol padding='30px 0 '>
 					<div className={Style.StatBarInner}>
 						<Stat count={songs ? songs.length : 0} label={'TRACKS'} />
-						<Stat
-							count={songs ? songs.filter((s: Song) => s.isRIAACertified).length : 0}
-							label={'RIAA CERTS'}
-						/>
+						<Stat count={songs ? songs.filter((s: Song) => s.certified).length : 0} label={'RIAA CERTS'} />
 					</div>
 				</ContentCol>
 			</div>

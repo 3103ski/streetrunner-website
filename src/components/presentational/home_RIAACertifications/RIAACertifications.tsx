@@ -15,7 +15,7 @@ const RIAACertification = () => {
 	const [panels, setPanels] = React.useState<AudioPanelCollection | null>(null);
 
 	async function fetchSongs() {
-		let data = await audioAPI.fetchSongs('&isRIAACertified=true');
+		let data = await audioAPI.fetchSongs('&certified=true');
 		let { songs } = data;
 
 		if (songs) {
