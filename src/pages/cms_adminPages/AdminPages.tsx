@@ -1,4 +1,4 @@
-import { Route, Routes, Link, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Tabs } from 'antd';
 
 import { ManageMusic, ManageAccount, ManageVideos } from 'components';
@@ -10,6 +10,8 @@ import routes from 'routes';
 
 const AdminPages = () => {
 	const location = useLocation().pathname;
+
+	const navigate = useNavigate();
 	const isActive = (path: string) => (location.includes(path) ? 1 : 0);
 
 	return (
@@ -17,38 +19,30 @@ const AdminPages = () => {
 			<ManageDiscographyProvider>
 				<ContentCol>
 					<Tabs
+						onTabClick={(active) => navigate(routes.CMS_ADMIN + active)}
 						defaultActiveKey={`/${location.split('/')[2]}`}
 						items={[
 							{
 								label: (
-									<Link
-										className={Style.Link}
-										to={routes.CMS_ADMIN + routes.CMS_ACCOUNT}
-										data-is-active={isActive(routes.CMS_ACCOUNT)}>
+									<span className={Style.Link} data-is-active={isActive(routes.CMS_ACCOUNT)}>
 										General
-									</Link>
+									</span>
 								),
 								key: routes.CMS_ACCOUNT,
 							},
 							{
 								label: (
-									<Link
-										className={Style.Link}
-										to={routes.CMS_ADMIN + routes.CMS_MANAGE_MUSIC}
-										data-is-active={isActive(routes.CMS_MANAGE_MUSIC)}>
+									<span className={Style.Link} data-is-active={isActive(routes.CMS_MANAGE_MUSIC)}>
 										Music
-									</Link>
+									</span>
 								),
 								key: routes.CMS_MANAGE_MUSIC,
 							},
 							{
 								label: (
-									<Link
-										className={Style.Link}
-										to={routes.CMS_ADMIN + routes.CMS_MANAGE_VIDEOS}
-										data-is-active={isActive(routes.CMS_MANAGE_VIDEOS)}>
+									<span className={Style.Link} data-is-active={isActive(routes.CMS_MANAGE_VIDEOS)}>
 										Videos
-									</Link>
+									</span>
 								),
 								key: routes.CMS_MANAGE_VIDEOS,
 							},
