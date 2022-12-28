@@ -18,6 +18,8 @@ import SelectNominationSecion from './songFormComponents/section_Nominations';
 import SelectCertificationSection from './songFormComponents/section_Certifications';
 import UploadAudioSection from './songFormComponents/section_Audio';
 
+import { validateNewSongUpload } from './songValidators';
+
 import Style from './songForm.module.scss';
 
 const initialState: NewSongInputInterface = {
@@ -49,6 +51,7 @@ export interface SongFormInterface {
 	onChange: any;
 	values: any;
 	setValue?: Function;
+	errors?: any;
 	form?: any;
 	albums?: Album[];
 }
@@ -57,16 +60,38 @@ const SongForm = ({ notificationAPI }: AddSongInterface) => {
 	// =>> Set up form data for use by inputs and Form Element
 	const { values, onChange, setValue } = useForm({ initialState });
 	const [form] = Form.useForm();
-	const [errors, setErrors] = React.useState<any>({});
+	const [errors, setErrors] = React.useState<any>(null);
+	React.useEffect(() => {
+		if (errors) {
+			Object.entries(errors).map((error) => {
+				let description = error[1] as string;
+
+				return notificationAPI.error({
+					duration: 2,
+					description,
+					placement: 'top',
+				});
+			});
+
+			setErrors(null);
+		}
+	}, [notificationAPI, errors]);
 
 	// ==> Setup forms submission protocol
 	const { handleUploadNewSong, isLoading, toggleIsAddingSong, albums } = React.useContext(ManageDiscographyContext);
 
-	const onSubmit = () => {
+	const onSubmit = async () => {
 		// TODO :: VALIDATE SONG VALUES BEFORE UPLOAD
 		let payload = values;
 		if (payload.useAlbumPhoto === true) payload.photo = '';
-		handleUploadNewSong(payload, successCallback, errorCallback);
+
+		let { valid, errors } = await validateNewSongUpload(payload);
+
+		if (errors) setErrors(errors);
+
+		if (valid) {
+			handleUploadNewSong(payload, successCallback, errorCallback);
+		}
 	};
 
 	// Preview Sources for photo selection inputs. Pass useState setter as callback into 'setPhotoPreviewResult' and use useState var as src in preview elements.
@@ -80,24 +105,6 @@ const SongForm = ({ notificationAPI }: AddSongInterface) => {
 			placement: 'top',
 		});
 	};
-
-	React.useEffect(() => {
-		if (errors) {
-			Object.entries(errors).map((error) => {
-				let message = error[0] as string;
-				let description = error[1] as string;
-
-				return notificationAPI.error({
-					duration: 2,
-					message,
-					description,
-					placement: 'top',
-				});
-			});
-
-			setErrors(null);
-		}
-	}, [notificationAPI, errors]);
 
 	return (
 		<>
@@ -125,7 +132,7 @@ const SongForm = ({ notificationAPI }: AddSongInterface) => {
 						albums={albums}
 						form={form}
 					/>
-					<SongDetailsSection onChange={onChange} values={values} setValue={setValue} />
+					<SongDetailsSection onChange={onChange} values={values} setValue={setValue} errors={errors} />
 					<SelectCertificationSection onChange={onChange} values={values} />
 					<SelectNominationSecion onChange={onChange} values={values} />
 					<UploadAudioSection onChange={onChange} values={values} />

@@ -36,7 +36,6 @@ const audioAPI = {
 	deleteSong({ data, successCallback, errorCallback }: APICallInterface) {
 		let token = localStorage.getItem(TOKEN_LABEL);
 		apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-		console.log({ data });
 		return apiInstance({
 			data,
 			method: 'DELETE',

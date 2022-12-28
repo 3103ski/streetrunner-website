@@ -138,10 +138,6 @@ const SongItemMenu = ({ song }: { song: Song }) => {
 	const [isReplacingAudio, toggleIsReplacingAudio] = React.useState<boolean>(false);
 	const handleConfirmReplaceAudio = () => toggleIsReplacingAudio(false);
 	const handleCancelReplaceAudio = () => toggleIsReplacingAudio(false);
-	// const handleReplaceAudioSuccess = () => {
-	// 	console.log('success');
-	// };
-	// const handleReplaceAudioError = (errors: any) => console.log({ errors });
 
 	const replaceAudioModal = (
 		<Modal

@@ -173,7 +173,6 @@ const ManageDiscographyProvider = (props: any) => {
 	async function handleUpdateSongDetails(data: any, success: Function, handleError: Function) {
 		function successCallback(data: any) {
 			const { song } = data;
-			console.log({ successSong: song });
 			if (song) {
 				dispatch({ type: actions.UPDATE_SONG, song });
 			} else {
@@ -192,7 +191,6 @@ const ManageDiscographyProvider = (props: any) => {
 		}
 
 		if (data && state.updatingSong) {
-			console.log({ update: state.updatingSong });
 			toggleIsLoading(true);
 			const multipart_form_data = new FormData();
 			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
@@ -223,7 +221,6 @@ const ManageDiscographyProvider = (props: any) => {
 			return null;
 		});
 
-		console.log({ songs, albums });
 		dispatch({ type: actions.SET_SONGS, songs });
 		dispatch({ type: actions.SET_ALBUMS, albums });
 		return songs;

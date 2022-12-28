@@ -79,7 +79,6 @@ const authAPI = {
 			url: `${routes.SERVER_URL}${routes.SERVER_AUTH}${routes.SERVER_AUTH_LOGIN}`,
 		})
 			.then(({ data }) => {
-				console.log({ data });
 				const { success } = data;
 				if (success) {
 					if (successCallback) successCallback(data);
@@ -87,7 +86,6 @@ const authAPI = {
 			})
 			.catch((e) => {
 				let errors = e.response.data.errors;
-				console.log({ errors, e });
 				if (errorHandler) errorHandler({ errors });
 			});
 	},

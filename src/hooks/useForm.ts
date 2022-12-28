@@ -19,7 +19,8 @@ export default function useForm({ callback, initialState }: UseFormProps) {
 		let newValues;
 		switch (e.target.type) {
 			case 'file':
-				newValues = updateObj(values, { [e.target.name]: e.target.files[0] });
+				let fileUpdate = e.target.files[0] !== undefined ? { [e.target.name]: e.target.files[0] } : {};
+				newValues = updateObj(values, fileUpdate);
 				break;
 			case 'checkbox':
 				newValues = updateObj(values, { [e.target.name]: e.target.checked });
