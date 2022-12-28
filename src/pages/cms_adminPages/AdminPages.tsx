@@ -17,7 +17,7 @@ const AdminPages = () => {
 			<ManageDiscographyProvider>
 				<ContentCol>
 					<Tabs
-						defaultActiveKey={routes.CMS_ACCOUNT}
+						defaultActiveKey={`/${location.split('/')[2]}`}
 						items={[
 							{
 								label: (
