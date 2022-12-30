@@ -22,8 +22,12 @@ let routes: any = {
 	SERVER_AUTH_UPDATE_PW: '/change-password',
 	// Content
 	SERVER_CONTENT: '/content',
-	SERVER_CONTENT_MUSIC: '/music',
 	SERVER_CONTENT_VIDEO: '/video',
+	SERVER_CONTENT_MUSIC: '/music',
+
+	MUSIC_REPLACE_AUDIO: '/replace-audio',
+	MUSIC_UPDATE_SONG_PHOTO: '/replace-song-photo',
+	MUSIC_UPDATE_ALBUM: '/album',
 };
 
 routes = {

@@ -18,14 +18,21 @@ interface ContextInterface {
 	isAddingSong: boolean;
 	isLoading: boolean;
 	updatingSong: null | Song;
+	replaceAudio: null | Song;
+	updatingAlbum: null | Album;
+
 	error: any;
 
 	// Context Methods
 	setUpdatingSong: Function;
+	setReplaceAudio: Function;
+	setUpdatingAlbum: Function;
 
 	handleUploadNewSong: Function;
 	handleUpdateSongDetails: Function;
 	handleDeleteSong: Function;
+	handleReplaceAudio: Function;
+	handleUpdateAlbum: Function;
 	removeSong: Function;
 
 	toggleIsLoading: Function;
@@ -40,6 +47,8 @@ interface ActionsInterface {
 	albums?: Album[];
 	isAddingSong?: boolean;
 	updatingSong?: null | Song;
+	updatingAlbum?: null | Album;
+	replaceAudio?: null | Song;
 	isLoading?: boolean;
 	error?: any;
 }
@@ -52,27 +61,46 @@ const initialState: ContextInterface = {
 	// Context State
 	isAddingSong: false,
 	updatingSong: null,
+	updatingAlbum: null,
+	replaceAudio: null,
 	isLoading: false,
 	error: null,
 
 	// Context Methods
 	handleUploadNewSong: () => null,
 	handleUpdateSongDetails: () => null,
+	handleReplaceAudio: () => null,
+	handleUpdateAlbum: () => null,
 	handleDeleteSong: () => null,
 	toggleIsLoading: () => null,
-	setUpdatingSong: () => null,
 	toggleIsAddingSong: () => null,
 	removeSong: () => null,
+
+	setUpdatingAlbum: () => null,
+	setUpdatingSong: () => null,
+	setReplaceAudio: () => null,
 };
 
 const ManageDiscographyContext = React.createContext(initialState);
 
 const DiscographyReducer = (
 	state: any,
-	{ type, song, songs, album, isAddingSong, updatingSong, isLoading, albums, error }: ActionsInterface
+	{
+		type,
+		song,
+		songs,
+		album,
+		isAddingSong,
+		updatingSong,
+		replaceAudio,
+		updatingAlbum,
+		isLoading,
+		albums,
+		error,
+	}: ActionsInterface
 ) => {
 	switch (type) {
-		// ==>> Setters
+		// ==>> Data Setters
 		case actions.SET_SONGS:
 			return updateObj(state, { songs });
 		case actions.SET_ALBUMS:
@@ -80,15 +108,21 @@ const DiscographyReducer = (
 		case actions.SET_ERROR:
 			return updateObj(state, { error });
 
-		// ==>> TOGGLES
+		// >> Update Focus Setters
+		case actions.SET_UPDATE_SONG_DETAILS:
+			return updateObj(state, { updatingSong });
+		case actions.SET_REPLACE_AUDIO:
+			return updateObj(state, { replaceAudio });
+		case actions.SET_UPDATING_ALBUM:
+			return updateObj(state, { updatingAlbum });
+
+		// ==>> Toggles
 		case actions.TOGGLE_IS_ADDING_SONG:
 			return updateObj(state, { isAddingSong });
-		case actions.TOGGLE_IS_UPDATING_DETAILS:
-			return updateObj(state, { updatingSong });
 		case actions.TOGGLE_IS_LOADING:
 			return updateObj(state, { isLoading });
 
-		// ==>> DATA CHANGES
+		// ==>> State Data Actions
 		case actions.REMOVE_SONG:
 			songs = !song ? songs : state.songs.filter((s: Song) => s._id.toString() !== song._id.toString());
 			return updateObj(state, {
@@ -106,6 +140,18 @@ const DiscographyReducer = (
 		case actions.ADD_ALBUM:
 			return updateObj(state, {
 				albums: !album ? state.albums : [...state.albums, album],
+			});
+		case actions.UPDATE_ALBUM:
+			albums = !album ? state.albums : state.albums.map((a: Album) => (a._id !== album._id ? a : album));
+			songs = !album
+				? state.songs
+				: state.songs.map((s: Song) => {
+						if (s.album._id === album._id) return { ...s, album };
+						return s;
+				  });
+			return updateObj(state, {
+				albums,
+				songs,
 			});
 		default:
 			return state;
@@ -127,7 +173,15 @@ const ManageDiscographyProvider = (props: any) => {
 	}
 
 	function setUpdatingSong(updatingSong: Song | null) {
-		return dispatch({ type: actions.TOGGLE_IS_UPDATING_DETAILS, updatingSong });
+		return dispatch({ type: actions.SET_UPDATE_SONG_DETAILS, updatingSong });
+	}
+
+	function setReplaceAudio(replaceAudio: Song | null) {
+		return dispatch({ type: actions.SET_REPLACE_AUDIO, replaceAudio });
+	}
+
+	function setUpdatingAlbum(updatingAlbum: Album | null) {
+		return dispatch({ type: actions.SET_UPDATING_ALBUM, updatingAlbum });
 	}
 
 	function addSong(song: Song) {
@@ -139,7 +193,7 @@ const ManageDiscographyProvider = (props: any) => {
 	}
 
 	//----------------------------
-	// ==> API Functions
+	//==> API Functions
 	//----------------------------
 	async function handleUploadNewSong(data: any, success: Function, handleError: Function) {
 		function successCallback(data: any) {
@@ -203,11 +257,86 @@ const ManageDiscographyProvider = (props: any) => {
 		}
 	}
 
+	async function handleReplaceAudio(data: any, success: Function, handleError: Function) {
+		function successCallback(data: any) {
+			const { song } = data;
+			if (song) {
+				dispatch({ type: actions.UPDATE_SONG, song });
+			} else {
+				console.log('Did not get a song back from api success');
+			}
+
+			success(data);
+
+			setReplaceAudio(null);
+			toggleIsLoading(false);
+		}
+
+		function errorCallback(errors: any) {
+			toggleIsLoading(false);
+			handleError(errors);
+		}
+
+		if (data && state.replaceAudio) {
+			toggleIsLoading(true);
+			const multipart_form_data = new FormData();
+
+			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
+			return audioAPI.replaceAudio({
+				data: multipart_form_data,
+				successCallback,
+				errorCallback,
+				updateId: state.replaceAudio._id,
+			});
+		}
+	}
+
 	async function handleDeleteSong(song: Song, successCallback: Function, errorCallback: Function) {
 		return audioAPI.deleteSong({ data: song, successCallback, errorCallback });
 	}
 
-	async function fetchAudio() {
+	async function handleUpdateAlbum(data: any, success: Function, handleError: Function) {
+		function successCallback(data: any) {
+			const { album } = data;
+
+			if (album) {
+				dispatch({ type: actions.UPDATE_ALBUM, album });
+			} else {
+				console.log('Did not get a song back from api success');
+			}
+
+			success(data);
+
+			setUpdatingAlbum(null);
+			toggleIsLoading(false);
+		}
+
+		function errorCallback(errors: any) {
+			toggleIsLoading(false);
+			handleError(errors);
+		}
+
+		if (data && state.updatingAlbum) {
+			toggleIsLoading(true);
+			const multipart_form_data = new FormData();
+
+			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
+			return audioAPI.updateAlbum({
+				data: multipart_form_data,
+				successCallback,
+				errorCallback,
+				updateId: state.updatingAlbum._id,
+			});
+		}
+	}
+
+	/**
+	 *---------------------
+	 * FETCHING AUDIO INIT
+	 *---------------------
+	 * This context only mounts if the user is authenticated. Fetch all audio in DB and load into state
+	 */
+	async function fetchAdminAudio() {
 		let { songs } = await audioAPI.fetchSongs();
 
 		let albums = [] as Album[];
@@ -227,7 +356,7 @@ const ManageDiscographyProvider = (props: any) => {
 	}
 
 	React.useEffect(() => {
-		fetchAudio();
+		fetchAdminAudio();
 	}, []);
 
 	return (
@@ -243,11 +372,15 @@ const ManageDiscographyProvider = (props: any) => {
 				handleUploadNewSong,
 				handleDeleteSong,
 				handleUpdateSongDetails,
+				handleReplaceAudio,
+				handleUpdateAlbum,
 
 				// Toggles
 				toggleIsAddingSong,
 				toggleIsLoading,
 				setUpdatingSong,
+				setReplaceAudio,
+				setUpdatingAlbum,
 			}}
 			{...props}
 		/>

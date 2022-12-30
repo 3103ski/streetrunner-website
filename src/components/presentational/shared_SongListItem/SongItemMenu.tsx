@@ -12,11 +12,20 @@ import { Song } from 'types';
 
 // Update Forms
 import UpdateDetails from 'components/cms/manageMusic/songForm/UpdateDetailsForm';
+import ReplaceSongForm from 'components/cms/manageMusic/songForm/ReplaceSongForm';
 
 import Style from './songListItem.module.scss';
 
 const SongItemMenu = ({ song }: { song: Song }) => {
-	const { handleDeleteSong, removeSong, setUpdatingSong, updatingSong } = React.useContext(ManageDiscographyContext);
+	const {
+		handleDeleteSong,
+		removeSong,
+		setUpdatingSong,
+		updatingSong,
+		replaceAudio,
+		setReplaceAudio,
+		setUpdatingAlbum,
+	} = React.useContext(ManageDiscographyContext);
 	const [deleteErrors, setDeleteErrors] = React.useState<any>(null);
 
 	const menuItems: MenuProps['items'] = [
@@ -26,11 +35,11 @@ const SongItemMenu = ({ song }: { song: Song }) => {
 		},
 		{
 			key: `edit_album_${song && `${song._id}_${song.album._id}`}`,
-			label: <p onClick={() => setUpdatingSong(song)}>Edit Album '{song.album.title}'</p>,
+			label: <p onClick={() => setUpdatingAlbum(song.album)}>Edit Album '{song.album.title}'</p>,
 		},
 		{
-			key: `replace_audio_${song && song._id}`,
-			label: <p onClick={() => toggleIsReplacingAudio(true)}>Repalce Audio</p>,
+			key: `SET_REPLACE_AUDIO_${song && song._id}`,
+			label: <p onClick={() => setReplaceAudio(song)}>Repalce Audio</p>,
 		},
 		{
 			key: `song_photo_${song && song._id}`,
@@ -135,28 +144,19 @@ const SongItemMenu = ({ song }: { song: Song }) => {
 	//----------------------
 	// ==> Replace Audio
 	//----------------------
-	const [isReplacingAudio, toggleIsReplacingAudio] = React.useState<boolean>(false);
-	const handleConfirmReplaceAudio = () => toggleIsReplacingAudio(false);
-	const handleCancelReplaceAudio = () => toggleIsReplacingAudio(false);
-
 	const replaceAudioModal = (
 		<Modal
-			open={isReplacingAudio}
-			onCancel={handleCancelReplaceAudio}
+			open={replaceAudio && replaceAudio._id === song._id ? true : false}
+			onCancel={() => setReplaceAudio(null)}
 			title={`Update "${song.title}" Details`}
 			footer={React.createElement(() => {
-				return (
-					<div>
-						<Button onClick={handleCancelReplaceAudio} type='secondary'>
-							Cancel
-						</Button>
-						<Button onClick={handleConfirmReplaceAudio} type='primary'>
-							Update
-						</Button>
-					</div>
-				);
+				return null;
 			})}>
-			<p>Replace Audio File for song here</p>
+			<p>
+				You can update the audio file for this song. IMPORTANT: The original audio file will be deleted. You can
+				not undo this replacement.
+			</p>
+			<ReplaceSongForm />
 		</Modal>
 	);
 

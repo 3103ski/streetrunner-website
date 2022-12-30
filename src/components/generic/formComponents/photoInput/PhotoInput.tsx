@@ -95,40 +95,18 @@ const PhotoInput = ({ showInput = false, setterCallback, name, onChange }: Photo
  * @returns a photo preview that can also be clicked to select a new file for PhotoInput
  */
 PhotoInput.PhotoPreview = ({ preview, name }: { preview: any; onClick?: any; name: string }) => {
-	// function setPreviewHeights() {
-	// 	const previews = Array.from(document.querySelectorAll('.photo-file-input-preview')) as HTMLElement[];
-
-	// 	previews.map((wrapper) => {
-	// 		if (wrapper) {
-	// 			let width = wrapper.getBoundingClientRect().width;
-	// 			let pad: string | number = document.defaultView
-	// 				?.getComputedStyle(wrapper)
-	// 				.paddingRight.split('px')[0] as string;
-
-	// 			if (pad) {
-	// 				pad = parseInt(pad) as number;
-	// 				wrapper.style.height = `${width - pad * 2}px`;
-	// 			}
-	// 		}
-	// 		return null;
-	// 	});
-	// }
-
 	const RenderPreview = () => {
 		const [foundEl, setFoundEl] = React.useState<any>(null);
 		const [checkedForEl, toggleCheckedForEl] = React.useState(false);
 
 		const onPreviewClick = () => PhotoInput.clickPhotoInput(name);
 
-		// Set height to full width of preview box. Default is 100% of parent
-		// window.onresize = setPreviewHeights;
 		React.useEffect(() => {
 			if (!checkedForEl) {
 				const inputEl = document.getElementById(`fileSelect_${name}`);
 				setFoundEl(inputEl);
 				toggleCheckedForEl(true);
 			}
-			// setPreviewHeights();
 			// eslint-disable-next-line react-hooks/exhaustive-deps
 		}, []);
 
@@ -189,7 +167,11 @@ PhotoInput.setPhotoPreviewResult = (e: any, callback: Function, onChange: Functi
 
 	if (file && reader) {
 		reader.readAsDataURL(file);
-		reader.onloadend = () => callback(reader.result);
+
+		reader.onloadend = () => {
+			// console.log(reader.result);
+			callback(reader.result);
+		};
 	}
 };
 
