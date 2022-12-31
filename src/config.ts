@@ -3,6 +3,7 @@ export const SERVER_URL = `${process.env.REACT_APP_SERVER_URL}`;
 export const DEFAULT_HEADERS = {
 	'Content-Type': 'application/json',
 };
+export const YOUTUBE_API = `${process.env.REACT_APP_YOUTUBE_API_KEY}`;
 
 // ==> Token Details
 const minutesForToken = 60;

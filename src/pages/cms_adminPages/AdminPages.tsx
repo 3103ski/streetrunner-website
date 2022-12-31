@@ -38,14 +38,14 @@ const AdminPages = () => {
 								),
 								key: routes.CMS_MANAGE_MUSIC,
 							},
-							{
-								label: (
-									<span className={Style.Link} data-is-active={isActive(routes.CMS_MANAGE_VIDEOS)}>
-										Videos
-									</span>
-								),
-								key: routes.CMS_MANAGE_VIDEOS,
-							},
+							// {
+							// 	label: (
+							// 		<span className={Style.Link} data-is-active={isActive(routes.CMS_MANAGE_VIDEOS)}>
+							// 			Videos
+							// 		</span>
+							// 	),
+							// 	key: routes.CMS_MANAGE_VIDEOS,
+							// },
 						]}
 					/>
 					<Routes>

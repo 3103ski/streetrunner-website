@@ -52,69 +52,52 @@ const UpdateAlbumForm = () => {
 		}
 	}, [form, setValue, updatingAlbum, values.newAlbumPhoto]);
 
-	return React.useMemo(
-		() => (
-			<Form form={form}>
-				{isLoading ? (
-					<Spin />
-				) : (
-					<>
-						<Form.Item>
-							<Input name='title' value={values.title} onChange={onChange} placeholder='Album Title' />
-						</Form.Item>
-						<Form.Item>
-							<Input name='artist' value={values.artist} onChange={onChange} placeholder='Artist' />
-						</Form.Item>
-						<Form.Item>
-							<Input name='year' value={values.year} onChange={onChange} placeholder='Year' />
-						</Form.Item>
-						{updatingAlbum && (
-							<PhotoInput.PhotoPreview
-								preview={
-									photoUpdatePreview === '' && updatingAlbum.photo
-										? updatingAlbum.photo.secure_url
-										: photoUpdatePreview
-								}
-								name='newAlbumPhoto'
-							/>
-						)}
-						<PhotoInput.ResetWrapper name='newAlbumPhoto'>
-							<PhotoInput
-								name='newAlbumPhoto'
-								setterCallback={setPhotoUpdatePreview}
-								onChange={onChange}
-							/>
-						</PhotoInput.ResetWrapper>
-						s
-						<div
-							style={{
-								width: '100%',
-								display: 'flex',
-								justifyContent: 'space-between',
-								paddingTop: '15px',
-							}}>
-							<Button onClick={cancelAlbumUpdate} type='secondary'>
-								Cancel
-							</Button>
-							<Button onClick={handleConfirmUpdateAlbum} type='primary'>
-								Update Album
-							</Button>
-						</div>
-					</>
-				)}
-			</Form>
-		),
-		[
-			cancelAlbumUpdate,
-			form,
-			isLoading,
-			onChange,
-			photoUpdatePreview,
-			updatingAlbum,
-			values.artist,
-			values.title,
-			values.year,
-		]
+	return (
+		<Form form={form}>
+			{isLoading ? (
+				<Spin />
+			) : (
+				<>
+					<Form.Item>
+						<Input name='title' value={values.title} onChange={onChange} placeholder='Album Title' />
+					</Form.Item>
+					<Form.Item>
+						<Input name='artist' value={values.artist} onChange={onChange} placeholder='Artist' />
+					</Form.Item>
+					<Form.Item>
+						<Input name='year' value={values.year} onChange={onChange} placeholder='Year' />
+					</Form.Item>
+					{updatingAlbum && (
+						<PhotoInput.PhotoPreview
+							preview={
+								photoUpdatePreview === '' && updatingAlbum.photo
+									? updatingAlbum.photo.secure_url
+									: photoUpdatePreview
+							}
+							name='newAlbumPhoto'
+						/>
+					)}
+					<PhotoInput.ResetWrapper name='newAlbumPhoto'>
+						<PhotoInput name='newAlbumPhoto' setterCallback={setPhotoUpdatePreview} onChange={onChange} />
+					</PhotoInput.ResetWrapper>
+					s
+					<div
+						style={{
+							width: '100%',
+							display: 'flex',
+							justifyContent: 'space-between',
+							paddingTop: '15px',
+						}}>
+						<Button onClick={cancelAlbumUpdate} type='secondary'>
+							Cancel
+						</Button>
+						<Button onClick={handleConfirmUpdateAlbum} type='primary'>
+							Update Album
+						</Button>
+					</div>
+				</>
+			)}
+		</Form>
 	);
 };
 

@@ -1,8 +1,10 @@
 // ==> React
 import * as React from 'react';
 
+import { Spin } from 'antd';
+
 // ==> Project Imports
-import { SongListItem, Overlay } from 'components';
+import { SongListItem, Overlay, Loader } from 'components';
 import { ContentCol, Footer, Spacer, ScrollToTop } from 'layout';
 import { DiscographyHeader } from 'assets';
 import { Song } from 'types';
@@ -12,16 +14,25 @@ import { audioAPI } from 'apis/audioAPI';
 import Style from './discographyPage.module.scss';
 
 const DiscographyPage = () => {
-	const [songs, setSongs] = React.useState<null | Song[]>(null);
+	const [isLoading, setIsLoading] = React.useState<boolean>(false);
+	const [initalLoaded, setInitialLoaded] = React.useState<boolean>(false);
+
+	const [songs, setSongs] = React.useState<Song[]>([] as Song[]);
 
 	async function fetchSongs() {
+		setIsLoading(true);
 		let { songs } = await audioAPI.fetchSongs();
-		if (songs) setSongs(songs);
+		if (songs) await setSongs(songs);
+
+		return setIsLoading(false);
 	}
 
 	React.useEffect(() => {
-		if (!songs) fetchSongs();
-	}, [songs]);
+		if (!initalLoaded) {
+			fetchSongs();
+			setInitialLoaded(true);
+		}
+	}, [initalLoaded, songs]);
 
 	const Stat = ({ count, label }: { count: number; label: string }) => {
 		return (
@@ -49,14 +60,16 @@ const DiscographyPage = () => {
 			<div className={Style.StatBarOuter}>
 				<ContentCol padding='30px 0 '>
 					<div className={Style.StatBarInner}>
-						<Stat count={songs ? songs.length : 0} label={'TRACKS'} />
-						<Stat count={songs ? songs.filter((s: Song) => s.certified).length : 0} label={'RIAA CERTS'} />
+						<Stat count={songs.length} label={'TRACKS'} />
+						<Stat count={songs.filter((s: Song) => s.certified).length} label={'RIAA CERTS'} />
 					</div>
 				</ContentCol>
 			</div>
 
 			<ContentCol>
-				{songs &&
+				{isLoading ? (
+					<Loader includeText loadingText='Loading Discography' />
+				) : (
 					songs.map((song, i) => (
 						<SongListItem
 							key={song._id}
@@ -66,7 +79,8 @@ const DiscographyPage = () => {
 							subtitle={`By ${song.artist}`}
 							lastItem={i === songs.length - 1}
 						/>
-					))}
+					))
+				)}
 			</ContentCol>
 
 			<Footer />
