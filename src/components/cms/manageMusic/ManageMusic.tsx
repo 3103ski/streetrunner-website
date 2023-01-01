@@ -21,6 +21,7 @@ const ManageMusic = () => {
 	//-------------------------
 	const updateAlbumModal = (
 		<Modal
+			destroyOnClose={true}
 			open={updatingAlbum ? true : false}
 			onCancel={() => setUpdatingAlbum(null)}
 			title={`Update "${updatingAlbum ? updatingAlbum.title : ''}" Details`}

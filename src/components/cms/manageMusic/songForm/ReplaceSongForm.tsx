@@ -15,9 +15,8 @@ const ReplaceSongForm = () => {
 	const [api, contextHolder] = notification.useNotification();
 
 	async function handleConfirmReplaceAudio() {
-		const { errors, valid } = await checkAudioFile(values);
+		const { errors } = await checkAudioFile(values);
 
-		console.log({ errors, valid, values });
 		if (errors) setErrors(errors);
 		handleReplaceAudio(values, successCallback, errorCallback);
 	}

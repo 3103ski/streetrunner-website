@@ -1,51 +1,59 @@
+// ==> React
 import * as React from 'react';
+
+// ==> Packages
 import axios from 'axios';
 import { Row, Col } from 'antd';
 
+// ==>  Project Imports
 import { YouTubeVideoColumn, Button, Loader } from 'components';
-import { Spacer } from 'layout';
-import { ContentCol } from 'layout';
+import { Spacer, ContentCol } from 'layout';
+import routes from 'routes';
 
-import * as config from 'config';
-
+// Component Imports
 import Style from './videosPage.module.scss';
 
 const VideosPage = () => {
 	const [videos, setVideos] = React.useState<any[]>([]);
 
-	const [loadMoreToken, setLoadMoreToken] = React.useState<string>('');
-	const [totalVideoCount, setTotalVideoCount] = React.useState<number>(0);
-
+	//
 	const [initalLoaded, setInitialLoaded] = React.useState<boolean>(false);
 	const [isLoadingMore, setIsLoadingMore] = React.useState<boolean>(false);
 
-	// --> Long playlist example
-	const playlistID = `PLKF4NwO9Nob_xN-ddHnL7MgTLrHgOZQL8`;
-	const youTubeURL = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=12&playlistId=${playlistID}&key=${config.YOUTUBE_API}`;
+	// YouTube Variables
+	const [loadMoreToken, setLoadMoreToken] = React.useState<string>('');
+	const [totalVideoCount, setTotalVideoCount] = React.useState<number>(0);
 
-	async function loadMore() {
+	// A function that fetches the current playlist ID from DB then the initial video fetch from YouTube
+	const handleInit = React.useCallback(async () => {
+		let { data } = await axios.get(`${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_VIDEO}`);
+		if (data) {
+			setVideos(data.items);
+			setLoadMoreToken(data.nextPageToken);
+			setTotalVideoCount(data.pageInfo.totalResults);
+			setInitialLoaded(true);
+		} else {
+			// set some errors
+		}
+	}, []);
+
+	React.useEffect(() => {
+		if (!initalLoaded) {
+			handleInit();
+		}
+	}, [initalLoaded, handleInit]);
+
+	// Fetch more videos using the nextPageToken provided from youtube
+	async function loadMore(pageToken: string) {
 		setIsLoadingMore(true);
-
-		let { data } = await axios.get(`${youTubeURL}&pageToken=${loadMoreToken}`);
+		let { data } = await axios.get(
+			`${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_VIDEO}?pageToken=${pageToken}`
+		);
 
 		setLoadMoreToken(data.nextPageToken);
 		setVideos([...videos, ...data.items]);
 		setIsLoadingMore(false);
 	}
-
-	React.useEffect(() => {
-		if (!initalLoaded) {
-			axios
-				.get(youTubeURL)
-				.then((res) => {
-					setVideos(res.data.items);
-					setLoadMoreToken(res.data.nextPageToken);
-					setTotalVideoCount(res.data.pageInfo.totalResults);
-					setInitialLoaded(true);
-				})
-				.catch((errors) => console.log({ errors }));
-		}
-	}, [initalLoaded, youTubeURL, videos]);
 
 	return (
 		<ContentCol>
@@ -55,14 +63,14 @@ const VideosPage = () => {
 				{!initalLoaded && <Loader />}
 				{videos &&
 					videos.map((video: any) => {
-						return <YouTubeVideoColumn video={video} />;
+						return <YouTubeVideoColumn video={video} key={video.snippet.resourceId.videoId} />;
 					})}
 				<Col span={24} className={Style.LoadWrapper}>
 					<Spacer height='45px' />
 					{isLoadingMore && initalLoaded ? (
 						<Loader />
 					) : videos.length < totalVideoCount ? (
-						<Button onClick={loadMore}>Load More</Button>
+						<Button onClick={() => loadMore(loadMoreToken)}>Load More</Button>
 					) : null}
 				</Col>
 			</Row>

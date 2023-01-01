@@ -20,17 +20,33 @@ const { Paragraph } = Typography;
 interface SongListItemProps {
 	title: string;
 	subtitle: string;
-	photo: string;
-	lastItem?: boolean | null;
+	lastItem?: boolean;
 	showFileInfo?: boolean;
 	showMenu?: boolean;
 	size?: 'default' | 'small';
 	song?: Song;
-	songUrl?: string;
 }
 
+/**
+ *---------------------------
+ *-->> SongListItem
+ *---------------------------
+ * A component that renders a list item with song meta data and includes a play button
+ * that will load the song into the website's player.
+ *
+ * @param {Song} song - (required) - a song document from the database
+ * @param {string} title (required) - Main text title for the song list item
+ * @param {string} subtitle (required) - Secondary text for the song list item
+ *
+ * @param {'default' | 'small'} size (optional) - This should be removed, the default has been changed to be smaller there isn't much difference
+ * @param {boolean} showMenu (optional) - default: false - If true, menu with admin options will show. Menu actions will not work if admin is not logged in.
+ * @param {boolean} showFileInfo (optional) - default: false - If true, will show the file size and song length in list item
+ * @param {boolean} lastItem (optional) - default: false - If true, will leave out bottom border to end list
+ *
+ * @returns A list item for the song document
+ */
 const SongListItem = ({
-	lastItem = null,
+	lastItem = false,
 	showMenu = false,
 	showFileInfo = false,
 	size = 'default',

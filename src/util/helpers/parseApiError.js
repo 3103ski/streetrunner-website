@@ -27,7 +27,6 @@ export default function parseApiError(error) {
 				});
 		}
 	}
-	// console.log({ parsedError });
 
 	// REST error return format
 

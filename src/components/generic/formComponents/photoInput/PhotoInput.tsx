@@ -169,7 +169,6 @@ PhotoInput.setPhotoPreviewResult = (e: any, callback: Function, onChange: Functi
 		reader.readAsDataURL(file);
 
 		reader.onloadend = () => {
-			// console.log(reader.result);
 			callback(reader.result);
 		};
 	}

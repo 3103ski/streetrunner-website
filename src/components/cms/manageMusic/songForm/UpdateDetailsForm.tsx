@@ -82,7 +82,6 @@ const UpdateDetails = ({ song }: { song: Song }) => {
 	const handleCancelUpdate = () => setUpdatingSong(null);
 
 	const handleUpdateDetailsSuccess = (data: any) => {
-		console.log('success');
 		console.log({ successData: data });
 	};
 	const handleUpdateDetailsError = (errors: any) => {

@@ -4,6 +4,9 @@ export { default as DiscographyCard } from './home_Discography/DiscographyCard.t
 export { default as HomeLanding } from './home_LandingSection/HomeLanding.tsx';
 export { default as RIAACertifications } from './home_RIAACertifications/RIAACertifications.tsx';
 
+// Video Page Components
+export { default as YouTubeVideoColumn } from './videos_VideoColumn/VideoColumn.tsx';
+
 // Shared Presentational
 export { default as SocialButtons } from './shared_SocialButtons/SocialButtons.tsx';
 export { default as SongListItem } from './shared_SongListItem/SongListitem.tsx';

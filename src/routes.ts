@@ -20,10 +20,13 @@ let routes: any = {
 	SERVER_AUTH_REGISTER: '/register',
 	SERVER_AUTH_VERIFY_TOKEN: '/verify-token',
 	SERVER_AUTH_UPDATE_PW: '/change-password',
+
 	// Content
 	SERVER_CONTENT: '/content',
 	SERVER_CONTENT_VIDEO: '/video',
 	SERVER_CONTENT_MUSIC: '/music',
+
+	VIDEO_YOUTUBE_INFO: '/youtube-info',
 
 	MUSIC_REPLACE_AUDIO: '/replace-audio',
 	MUSIC_UPDATE_SONG_PHOTO: '/replace-song-photo',

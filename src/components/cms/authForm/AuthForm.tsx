@@ -10,7 +10,7 @@ import { Button, Form, Spin, Alert } from 'antd';
 import { LoginArgs, RegisterArgs, authAPI } from 'apis/authAPI';
 import { useForm } from 'hooks';
 import routes from 'routes';
-import { Card, Input } from 'components';
+import { Card, Input, Loader } from 'components';
 import { TOKEN_LABEL } from 'config';
 
 /**
@@ -100,7 +100,7 @@ export default function AuthForm() {
 					<div data-testid='login-redirect' />
 				</>
 			) : isLoading ? (
-				<Spin size='large' data-testid='form-spinner'></Spin>
+				<Loader loadingText='Logging in' includeText />
 			) : (
 				<Form name='login_form' data-testid={'login-form'} initialValues={values}>
 					<Form.Item name='email' rules={[{ required: true, message: 'Please input your email!' }]}>

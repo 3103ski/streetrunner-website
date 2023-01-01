@@ -111,6 +111,45 @@ const authAPI = {
 				verifyCallback(null);
 			});
 	},
+	updatePassword({ data, successCallback, errorHandler }: LoginArgs) {
+		/** Check for token in local storage */
+		let token = localStorage.getItem(TOKEN_LABEL);
+
+		/** Ensure existing token is in headers */
+		apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+		return apiInstance({
+			data,
+			method: 'POST',
+			url: `${routes.SERVER_URL}${routes.SERVER_AUTH}${routes.SERVER_AUTH_UPDATE_PW}`,
+		})
+			.then(({ data }) => {
+				if (data.success) {
+					if (successCallback) successCallback(data);
+				}
+				console.log({ success: data });
+			})
+			.catch((errors) => {
+				console.log({ errors });
+			});
+	},
+	updateYouTubePlaylist(data: any, success: Function, errorHandler: Function) {
+		let token = localStorage.getItem(TOKEN_LABEL);
+		/** Ensure existing token is in headers */
+		apiInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+		return apiInstance({
+			data,
+			url: `${routes.SERVER_URL}${routes.SERVER_CONTENT}${routes.SERVER_CONTENT_VIDEO}`,
+			method: 'PUT',
+		})
+			.then(({ data }) => {
+				if (success) success(data);
+			})
+			.catch((errors) => {
+				if (errorHandler) errorHandler(errors);
+			});
+	},
 };
 
 export { authAPI };
