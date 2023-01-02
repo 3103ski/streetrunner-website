@@ -1,14 +1,12 @@
 // ==> React
 import * as React from 'react';
 
-import { Spin } from 'antd';
-
 // ==> Project Imports
 import { SongListItem, Overlay, Loader } from 'components';
 import { ContentCol, Footer, Spacer, ScrollToTop } from 'layout';
 import { DiscographyHeader } from 'assets';
 import { Song } from 'types';
-import { audioAPI } from 'apis/audioAPI';
+import { audioAPI } from 'apis';
 
 // Component
 import Style from './discographyPage.module.scss';
@@ -70,16 +68,18 @@ const DiscographyPage = () => {
 				{isLoading ? (
 					<Loader includeText loadingText='Loading Discography' />
 				) : (
-					songs.map((song, i) => (
-						<SongListItem
-							key={song._id}
-							song={song}
-							size='small'
-							title={`${song.title}`}
-							subtitle={`By ${song.artist}`}
-							lastItem={i === songs.length - 1}
-						/>
-					))
+					songs
+						.sort((a, b) => (a.album.title < b.album.title ? -1 : 1))
+						.map((song, i) => (
+							<SongListItem
+								key={song._id}
+								song={song}
+								size='small'
+								title={`${song.title}`}
+								subtitle={`By ${song.artist}`}
+								lastItem={i === songs.length - 1}
+							/>
+						))
 				)}
 			</ContentCol>
 

@@ -25,6 +25,9 @@ let routes: any = {
 	SERVER_CONTENT: '/content',
 	SERVER_CONTENT_VIDEO: '/video',
 	SERVER_CONTENT_MUSIC: '/music',
+	SERVER_CONTENT_PHOTO: '/photo',
+
+	PHOTO_REEL: '/reel',
 
 	VIDEO_YOUTUBE_INFO: '/youtube-info',
 

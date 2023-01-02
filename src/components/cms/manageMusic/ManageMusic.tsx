@@ -45,18 +45,20 @@ const ManageMusic = () => {
 						</Button>
 					</div>
 					{songs &&
-						songs.map((song, i) => (
-							<SongListItem
-								size='small'
-								key={song._id}
-								showFileInfo
-								showMenu
-								song={song}
-								lastItem={i === songs.length - 1}
-								title={song.title}
-								subtitle={song.album && `"${song.album.title}" by ${song.album.artist}`}
-							/>
-						))}
+						songs
+							.sort((a, b) => (a.album.title < b.album.title ? -1 : 1))
+							.map((song, i) => (
+								<SongListItem
+									size='small'
+									key={song._id}
+									showFileInfo
+									showMenu
+									song={song}
+									lastItem={i === songs.length - 1}
+									title={song.title}
+									subtitle={song.album && `"${song.album.title}" by ${song.album.artist}`}
+								/>
+							))}
 				</>
 			)}
 		</>

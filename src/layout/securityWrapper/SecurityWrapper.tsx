@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // ==> Project Imports
-import { authAPI } from 'apis/authAPI';
+import { authAPI } from 'apis';
 import routes from 'routes';
 import { TOKEN_LABEL } from 'config';
 

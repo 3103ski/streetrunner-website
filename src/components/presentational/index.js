@@ -10,5 +10,5 @@ export { default as YouTubeVideoColumn } from './videos_VideoColumn/VideoColumn.
 // Shared Presentational
 export { default as SocialButtons } from './shared_SocialButtons/SocialButtons.tsx';
 export { default as SongListItem } from './shared_SongListItem/SongListitem.tsx';
-export { default as InfiniteReel } from './shared_InfiniteReel/InfiniteReel.jsx';
+export { default as InfiniteReel } from './shared_InfiniteReel/InfiniteReel.tsx';
 export { default as AudioPlayer } from './shared_AudioPlayer/AudioPlayer.tsx';

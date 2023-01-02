@@ -102,3 +102,4 @@ const audioAPI = {
 };
 
 export { audioAPI };
+export default audioAPI;

@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 
 // ==> Packages
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Spin, Alert } from 'antd';
+import { Button, Form, Alert } from 'antd';
 
 // ==> Project Imports
 import { LoginArgs, RegisterArgs, authAPI } from 'apis/authAPI';

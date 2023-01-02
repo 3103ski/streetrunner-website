@@ -2,7 +2,7 @@ import * as React from 'react';
 
 // Project
 import { Song, Album } from 'types';
-import { audioAPI } from 'apis/audioAPI';
+import { audioAPI } from 'apis';
 import { MockAlbums } from 'mockdata';
 import { updateObj } from 'util/index';
 
