@@ -2,7 +2,7 @@ import { Form, Checkbox, Radio } from 'antd';
 
 // Component
 import { Input } from 'components';
-import type { SongFormInterface } from '../SongForm';
+import type { SongFormInterface } from '../NewSongUploadForm';
 import Style from '../songForm.module.scss';
 
 const SelectNominationSecion = ({ onChange, values }: SongFormInterface) => {

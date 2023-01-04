@@ -1,7 +1,7 @@
 import { Radio, Form, Checkbox } from 'antd';
 
 // Component
-import type { SongFormInterface } from '../SongForm';
+import type { SongFormInterface } from '../NewSongUploadForm';
 import Style from '../songForm.module.scss';
 
 const SelectCertificationSection = ({ onChange, values }: SongFormInterface) => {

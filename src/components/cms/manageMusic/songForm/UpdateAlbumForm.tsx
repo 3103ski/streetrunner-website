@@ -80,7 +80,7 @@ const UpdateAlbumForm = () => {
 					<PhotoInput.ResetWrapper name='newAlbumPhoto'>
 						<PhotoInput name='newAlbumPhoto' setterCallback={setPhotoUpdatePreview} onChange={onChange} />
 					</PhotoInput.ResetWrapper>
-					s
+
 					<div
 						style={{
 							width: '100%',

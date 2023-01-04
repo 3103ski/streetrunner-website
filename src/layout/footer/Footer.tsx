@@ -31,14 +31,14 @@ const Footer = ({ color = 'opaq' }: FooterProps) => {
 								</Link>
 								<div>
 									<div className={Style.Links}>
-										<Link to={routes.DISCOGRAPHY}>VIDEOS</Link>
+										<Link to={routes.VIDEOS}>VIDEOS</Link>
 										<Link to={routes.DISCOGRAPHY}>DISCOGRAPHY</Link>
 										<Link to={routes.ABOUT}>ABOUT</Link>
 									</div>
 									<p className={Style.Footnote}>
-										© 2015 STREETRUNNER BEATS • All Rights Reserved •{' '}
+										© 2015 STREETRUNNER BEATS • All Rights Reserved{' '}
 										<span className={Style.AdminLogin} onClick={() => navigate(routes.CMS_ADMIN)}>
-											Admin
+											• Admin
 										</span>
 									</p>
 								</div>

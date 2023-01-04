@@ -44,11 +44,17 @@
 
 		.Footnote,
 		.AdminLogin {
+			@include no-select;
 			font-size: 0.5rem;
 		}
 
 		.AdminLogin {
-			color: map-get($theme-colors, color_themePrimaryOpaq) !important;
+			color: map-get($theme-colors, color_themePrimary) !important;
+			opacity: 0;
+			transition: 0.2s;
+			&:hover {
+				opacity: 1;
+			}
 		}
 
 		.AdminLogin:hover {

@@ -5,7 +5,7 @@ import { formatFileSize } from 'util/index';
 import { Input, Button } from 'components';
 
 // Component
-import type { SongFormInterface } from '../SongForm';
+import type { SongFormInterface } from '../NewSongUploadForm';
 import Style from '../songForm.module.scss';
 
 const UploadAudioSection = ({ onChange, values }: SongFormInterface) => {

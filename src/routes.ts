@@ -32,7 +32,7 @@ let routes: any = {
 	VIDEO_YOUTUBE_INFO: '/youtube-info',
 
 	MUSIC_REPLACE_AUDIO: '/replace-audio',
-	MUSIC_UPDATE_SONG_PHOTO: '/replace-song-photo',
+	MUSIC_SONG_PHOTO: '/song-photo',
 	MUSIC_UPDATE_ALBUM: '/album',
 };
 

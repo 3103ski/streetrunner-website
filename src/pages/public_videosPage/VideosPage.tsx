@@ -7,7 +7,7 @@ import { Row, Col } from 'antd';
 
 // ==>  Project Imports
 import { YouTubeVideoColumn, Button, Loader } from 'components';
-import { Spacer, ContentCol } from 'layout';
+import { Spacer, ContentCol, Footer } from 'layout';
 import routes from 'routes';
 
 // Component Imports
@@ -56,25 +56,28 @@ const VideosPage = () => {
 	}
 
 	return (
-		<ContentCol>
-			<Spacer height='45px' />
-			<h1>VIDEOGRAPHY</h1>
-			<Row>
-				{!initalLoaded && <Loader />}
-				{videos &&
-					videos.map((video: any) => {
-						return <YouTubeVideoColumn video={video} key={video.snippet.resourceId.videoId} />;
-					})}
-				<Col span={24} className={Style.LoadWrapper}>
-					<Spacer height='45px' />
-					{isLoadingMore && initalLoaded ? (
-						<Loader />
-					) : videos.length < totalVideoCount ? (
-						<Button onClick={() => loadMore(loadMoreToken)}>Load More</Button>
-					) : null}
-				</Col>
-			</Row>
-		</ContentCol>
+		<>
+			<ContentCol>
+				<Spacer height='45px' />
+				<h1>VIDEOGRAPHY</h1>
+				<Row>
+					{!initalLoaded && <Loader />}
+					{videos &&
+						videos.map((video: any) => {
+							return <YouTubeVideoColumn video={video} key={video.snippet.resourceId.videoId} />;
+						})}
+					<Col span={24} className={Style.LoadWrapper}>
+						<Spacer height='45px' />
+						{isLoadingMore && initalLoaded ? (
+							<Loader />
+						) : videos.length < totalVideoCount ? (
+							<Button onClick={() => loadMore(loadMoreToken)}>Load More</Button>
+						) : null}
+					</Col>
+				</Row>
+			</ContentCol>
+			<Footer />
+		</>
 	);
 };
 

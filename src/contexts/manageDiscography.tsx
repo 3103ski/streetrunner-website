@@ -17,6 +17,9 @@ interface ContextInterface {
 	// Context State
 	isAddingSong: boolean;
 	isLoading: boolean;
+	isRemovingSongPhoto: boolean;
+	songPhotoUploadFocus: Song | null;
+
 	updatingSong: null | Song;
 	replaceAudio: null | Song;
 	updatingAlbum: null | Album;
@@ -27,16 +30,20 @@ interface ContextInterface {
 	setUpdatingSong: Function;
 	setReplaceAudio: Function;
 	setUpdatingAlbum: Function;
+	setSongPhotoUploadFocus: Function;
 
 	handleUploadNewSong: Function;
 	handleUpdateSongDetails: Function;
 	handleDeleteSong: Function;
 	handleReplaceAudio: Function;
+	handleAddSongPhoto: Function;
+	handleDeleteSongPhoto: Function;
 	handleUpdateAlbum: Function;
 	removeSong: Function;
 
 	toggleIsLoading: Function;
 	toggleIsAddingSong: Function;
+	toggleIsRemovingSongPhoto: Function;
 }
 
 interface ActionsInterface {
@@ -46,6 +53,7 @@ interface ActionsInterface {
 	album?: Album;
 	albums?: Album[];
 	isAddingSong?: boolean;
+	songPhotoUploadFocus?: null | Song;
 	updatingSong?: null | Song;
 	updatingAlbum?: null | Album;
 	replaceAudio?: null | Song;
@@ -55,33 +63,58 @@ interface ActionsInterface {
 
 const initialState: ContextInterface = {
 	// Context Data
-	songs: [] as Song[],
 	albums: [...MockAlbums] as Album[],
+	songs: [] as Song[],
 
 	// Context State
-	isAddingSong: false,
-	updatingSong: null,
-	updatingAlbum: null,
-	replaceAudio: null,
-	isLoading: false,
 	error: null,
+	isAddingSong: false,
+	isLoading: false,
+	isRemovingSongPhoto: false,
+	songPhotoUploadFocus: null,
+	replaceAudio: null,
+	updatingAlbum: null,
+	updatingSong: null,
 
 	// Context Methods
-	handleUploadNewSong: () => null,
-	handleUpdateSongDetails: () => null,
-	handleReplaceAudio: () => null,
-	handleUpdateAlbum: () => null,
+	handleAddSongPhoto: () => null,
 	handleDeleteSong: () => null,
-	toggleIsLoading: () => null,
-	toggleIsAddingSong: () => null,
+	handleReplaceAudio: () => null,
+	handleDeleteSongPhoto: () => null,
+	handleUpdateAlbum: () => null,
+	handleUpdateSongDetails: () => null,
+	handleUploadNewSong: () => null,
+
 	removeSong: () => null,
 
+	setReplaceAudio: () => null,
 	setUpdatingAlbum: () => null,
 	setUpdatingSong: () => null,
-	setReplaceAudio: () => null,
+
+	toggleIsAddingSong: () => null,
+	toggleIsLoading: () => null,
+	toggleIsRemovingSongPhoto: () => null,
+	setSongPhotoUploadFocus: () => null,
 };
 
 const ManageDiscographyContext = React.createContext(initialState);
+
+/**
+ * >>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ * >>>>>>>>>>>>>>>>>>> TODO <<<<<<<<<<<<<<<<<<<<<<<<<<
+ * >>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+ *
+ * --> Finish the Song Photo Upload feature
+ * - Change boolean flag for song photo to hold a song so only one modal opens
+ * - Set up upload function that created MultipartForm and submits to API
+ * - Create success and error handler here. Success changes the focus song for modal close
+ * - Run local update song handler using returned song
+ *
+ * --> Add option to remove Song Photo
+ * - Set up api handler
+ * - Put focus song in state
+ * - Run local update song handler using returned song
+ */
 
 const DiscographyReducer = (
 	state: any,
@@ -94,6 +127,7 @@ const DiscographyReducer = (
 		updatingSong,
 		replaceAudio,
 		updatingAlbum,
+		songPhotoUploadFocus,
 		isLoading,
 		albums,
 		error,
@@ -121,6 +155,8 @@ const DiscographyReducer = (
 			return updateObj(state, { isAddingSong });
 		case actions.TOGGLE_IS_LOADING:
 			return updateObj(state, { isLoading });
+		case actions.TOGGLE_IS_UPLOADING_SONG_PHOTO:
+			return updateObj(state, { songPhotoUploadFocus });
 
 		// ==>> State Data Actions
 		case actions.REMOVE_SONG:
@@ -164,12 +200,18 @@ const ManageDiscographyProvider = (props: any) => {
 	//----------------------------
 	// ==> STATE Functions
 	//----------------------------
+	// --> UI Toggles
 	function toggleIsLoading(isLoading: boolean) {
 		return dispatch({ type: actions.TOGGLE_IS_LOADING, isLoading });
 	}
 
 	function toggleIsAddingSong(isAddingSong: boolean) {
 		return dispatch({ type: actions.TOGGLE_IS_ADDING_SONG, isAddingSong });
+	}
+
+	// --> UI Setters
+	function setSongPhotoUploadFocus(songPhotoUploadFocus: Song | null) {
+		return dispatch({ type: actions.TOGGLE_IS_UPLOADING_SONG_PHOTO, songPhotoUploadFocus });
 	}
 
 	function setUpdatingSong(updatingSong: Song | null) {
@@ -184,6 +226,7 @@ const ManageDiscographyProvider = (props: any) => {
 		return dispatch({ type: actions.SET_UPDATING_ALBUM, updatingAlbum });
 	}
 
+	// --> Local Data Updates
 	function addSong(song: Song) {
 		return dispatch({ type: actions.ADD_SONG, song });
 	}
@@ -330,6 +373,55 @@ const ManageDiscographyProvider = (props: any) => {
 		}
 	}
 
+	async function handleAddSongPhoto(data: any, handleSuccess?: Function, handleError?: Function) {
+		toggleIsLoading(true);
+		const multipart_form_data = new FormData();
+		Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
+
+		function successCallback(data: any) {
+			console.log({ data });
+			const { song } = data;
+			if (song) {
+				console.log('got the song');
+				if (handleSuccess) handleSuccess();
+				dispatch({ type: actions.UPDATE_SONG, song });
+				setSongPhotoUploadFocus(null);
+			} else {
+				console.log('got no song');
+			}
+			toggleIsLoading(false);
+		}
+		function errorCallback(errors: any) {
+			if (handleError) handleError(errors);
+			toggleIsLoading(false);
+		}
+
+		return audioAPI.uploadSongPhoto({ data: multipart_form_data, successCallback, errorCallback });
+	}
+
+	async function handleDeleteSongPhoto(songId: string) {
+		toggleIsLoading(true);
+		console.log({ songId });
+
+		function successCallback(data: any) {
+			console.log({ data });
+			if (data.song) {
+				dispatch({ type: actions.UPDATE_SONG, song: data.song });
+				setSongPhotoUploadFocus(null);
+			} else {
+				console.log('no song came back');
+			}
+
+			toggleIsLoading(false);
+		}
+
+		function errorCallback(errors: any) {
+			console.log({ errors });
+		}
+
+		return audioAPI.deleteSongPhoto({ data: { songId }, successCallback, errorCallback });
+	}
+
 	/**
 	 *---------------------
 	 * FETCHING AUDIO INIT
@@ -372,12 +464,15 @@ const ManageDiscographyProvider = (props: any) => {
 				handleUploadNewSong,
 				handleDeleteSong,
 				handleUpdateSongDetails,
+				handleDeleteSongPhoto,
 				handleReplaceAudio,
 				handleUpdateAlbum,
+				handleAddSongPhoto,
 
 				// Toggles
 				toggleIsAddingSong,
 				toggleIsLoading,
+				setSongPhotoUploadFocus,
 				setUpdatingSong,
 				setReplaceAudio,
 				setUpdatingAlbum,

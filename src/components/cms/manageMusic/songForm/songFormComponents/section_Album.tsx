@@ -5,7 +5,7 @@ import { Row, Col, Form, Tabs, Select } from 'antd';
 import { PhotoInput, Input } from 'components';
 
 // Component
-import type { SongFormInterface } from '../SongForm';
+import type { SongFormInterface } from '../NewSongUploadForm';
 import Style from '../songForm.module.scss';
 
 const SelectAlbumSection = ({ onChange, setValue, albums, values, form }: SongFormInterface) => {

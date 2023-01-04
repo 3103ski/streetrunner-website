@@ -89,30 +89,31 @@ const AudioPlayer = () => {
 			</div>
 
 			{song && (
-				<div className={Style.ControlsWrapper} data-player-open={playerVisible ? 1 : 0}>
-					<div className={Style.PlayerButton} onClick={() => togglePausePlayer()}>
-						<IconifyIcon
-							icon={
-								playerStatus === PlayerStatuses.PLAYING
-									? ICON_PAUSE_BUTTON_NO_ROUND
-									: ICON_PLAY_BUTTON_NO_ROUND
-							}
-							size='sm'
-						/>
-					</div>
+				<>
+					<div className={Style.ControlsWrapper} data-player-open={playerVisible ? 1 : 0}>
+						<div className={Style.PlayerButton} onClick={() => togglePausePlayer()}>
+							<IconifyIcon
+								icon={
+									playerStatus === PlayerStatuses.PLAYING
+										? ICON_PAUSE_BUTTON_NO_ROUND
+										: ICON_PLAY_BUTTON_NO_ROUND
+								}
+								size='sm'
+							/>
+						</div>
 
-					<div className={Style.PlayerButton} onClick={() => toggleMutePlayer()}>
-						<IconifyIcon icon={playerIsMuted === true ? ICON_VOLUME_MUTED : ICON_VOLUME} size='sm' />
+						<div className={Style.PlayerButton} onClick={() => toggleMutePlayer()}>
+							<IconifyIcon icon={playerIsMuted === true ? ICON_VOLUME_MUTED : ICON_VOLUME} size='sm' />
+						</div>
 					</div>
-				</div>
+					<div
+						className={Style.ToggleVisibility}
+						data-player-open={playerVisible ? 1 : 0}
+						onClick={() => togglePlayerVisible(!playerVisible)}>
+						<IconifyIcon icon={playerVisible ? ICON_POINT_DOWN : ICON_MUSIC_NOTES} size='sm' />
+					</div>
+				</>
 			)}
-
-			<div
-				className={Style.ToggleVisibility}
-				data-player-open={playerVisible ? 1 : 0}
-				onClick={() => togglePlayerVisible(!playerVisible)}>
-				<IconifyIcon icon={playerVisible ? ICON_POINT_DOWN : ICON_MUSIC_NOTES} size='sm' />
-			</div>
 		</div>
 	);
 };

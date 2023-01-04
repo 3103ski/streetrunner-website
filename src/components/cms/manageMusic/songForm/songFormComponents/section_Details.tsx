@@ -6,7 +6,7 @@ import { GeneralInputInterface } from 'components/cms/cms-types';
 import { PhotoInput, Input } from 'components';
 
 // Component
-import type { SongFormInterface } from '../SongForm';
+import type { SongFormInterface } from '../NewSongUploadForm';
 import Style from '../songForm.module.scss';
 
 const SongDetailsSection = ({

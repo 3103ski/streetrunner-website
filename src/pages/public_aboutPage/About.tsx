@@ -47,7 +47,7 @@ const AboutPage = () => {
 								<Button fluid bottomSpace='md' onClick={() => navigate(routes.DISCOGRAPHY)}>
 									Discography
 								</Button>
-								<Button fluid bottomSpace='lg' type='secondary'>
+								<Button fluid bottomSpace='lg' type='secondary' onClick={() => navigate(routes.VIDEOS)}>
 									Videos
 								</Button>
 								<SocialButtons />

@@ -5,11 +5,11 @@ import { notification, Modal } from 'antd';
 
 // Project Imports
 import { Button, SongListItem } from 'components';
-import UpdateAlbumForm from './songForm/UpdateAlbumForm';
 import { ManageDiscographyContext } from 'contexts';
 
 // Component Imports
-import AddSongForm from './songForm/SongForm';
+import UpdateAlbumForm from './songForm/UpdateAlbumForm';
+import NewSongUploadForm from './songForm/NewSongUploadForm';
 
 const ManageMusic = () => {
 	const { toggleIsAddingSong, isAddingSong, songs, updatingAlbum, setUpdatingAlbum } =
@@ -35,7 +35,7 @@ const ManageMusic = () => {
 		<>
 			{contextHolder}
 			{isAddingSong ? (
-				<AddSongForm notificationAPI={api} />
+				<NewSongUploadForm notificationAPI={api} />
 			) : (
 				<>
 					{updateAlbumModal}

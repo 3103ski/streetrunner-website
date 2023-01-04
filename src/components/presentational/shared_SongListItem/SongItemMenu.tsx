@@ -6,13 +6,14 @@ import { Modal, Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 
 // Projects
-import { IconifyIcon, ICON_DOTS_MENU_DOTS, Button } from 'components';
+import { IconifyIcon, ICON_DOTS_MENU_DOTS, Button, Loader } from 'components';
 import { ManageDiscographyContext } from 'contexts';
 import { Song } from 'types';
 
 // Update Forms
 import UpdateDetails from 'components/cms/manageMusic/songForm/UpdateDetailsForm';
 import ReplaceSongForm from 'components/cms/manageMusic/songForm/ReplaceSongForm';
+import ManageSongPhotoForm from 'components/cms/manageMusic/songForm/ManageSongPhotoForm';
 
 import Style from './songListItem.module.scss';
 
@@ -22,6 +23,8 @@ const SongItemMenu = ({ song }: { song: Song }) => {
 		removeSong,
 		setUpdatingSong,
 		updatingSong,
+		songPhotoUploadFocus,
+		setSongPhotoUploadFocus,
 		replaceAudio,
 		setReplaceAudio,
 		setUpdatingAlbum,
@@ -44,53 +47,67 @@ const SongItemMenu = ({ song }: { song: Song }) => {
 		{
 			key: `song_photo_${song && song._id}`,
 			label: (
-				<p onClick={() => toggleIsUpdatingSongPhoto(true)}>
-					{!song.photo ? 'Add Song Photo' : 'Remove/Replace Song Photo'}
+				<p onClick={() => setSongPhotoUploadFocus(song)}>
+					{!song.photo ? 'Add A Song Photo' : 'Remove/Replace Song Photo'}
 				</p>
 			),
 		},
-		{ key: `delete_${song && song._id}`, label: <p onClick={() => toggleIsDeleting(true)}>Delete Song</p> },
+		{ key: `delete_${song && song._id}`, label: <p onClick={() => toggleShowDeleteModal(true)}>Delete Song</p> },
 	];
 
 	//---------------------
 	// ==> Deleting Modal
 	//---------------------
+	const [showDeleteModal, toggleShowDeleteModal] = React.useState<boolean>(false);
 	const [isDeleting, toggleIsDeleting] = React.useState<boolean>(false);
 
-	const handleCancelDelete = () => toggleIsDeleting(false);
-	const handleConfirmDelete = () => handleDeleteSong(song, handleDeleteSuccess, handleDeleteError);
-	const handleDeleteError = (errors: any) => setDeleteErrors(errors.response.data.errors);
+	const handleCancelDelete = () => toggleShowDeleteModal(false);
+	const handleConfirmDelete = () => {
+		toggleIsDeleting(true);
+		return handleDeleteSong(song, handleDeleteSuccess, handleDeleteError);
+	};
+	const handleDeleteError = (errors: any) => {
+		toggleIsDeleting(false);
+		setDeleteErrors(errors.response.data.errors);
+	};
 	const handleDeleteSuccess = (data: any) => {
 		if (data.deletedSong) {
 			removeSong(data.deletedSong);
-			toggleIsDeleting(false);
+			toggleShowDeleteModal(false);
 		}
+		toggleIsDeleting(false);
 	};
 
 	const deleteModal = (
 		<Modal
-			open={isDeleting}
+			open={showDeleteModal}
 			onCancel={handleCancelDelete}
 			title={`Delete "${song.title}"`}
 			footer={React.createElement(() => {
-				return (
-					<div>
+				return null;
+			})}>
+			<div>
+				{deleteErrors &&
+					Object.entries(deleteErrors).map((error: any) => (
+						<p key={`${Math.random()}`} style={{ fontSize: '9px' }}>
+							SERVER_ERROR :: {error[0]} : {error[1]}
+						</p>
+					))}
+				{isDeleting ? (
+					<Loader includeText loadingText='Deleting Song' />
+				) : (
+					<>
+						<p>Are you sure you want to delete "{song.title}"? This action can NOT be undone</p>
+
 						<Button onClick={handleCancelDelete} type='secondary'>
 							Cancel
 						</Button>
 						<Button onClick={handleConfirmDelete} type='primary'>
 							Yes, Delete
 						</Button>
-					</div>
-				);
-			})}>
-			{deleteErrors &&
-				Object.entries(deleteErrors).map((error: any) => (
-					<p key={`${Math.random()}`} style={{ fontSize: '9px' }}>
-						SERVER_ERROR :: {error[0]} : {error[1]}
-					</p>
-				))}
-			<p>Are you sure you want to delete "{song.title}"? This action can NOT be undone</p>
+					</>
+				)}
+			</div>
 		</Modal>
 	);
 
@@ -113,31 +130,26 @@ const SongItemMenu = ({ song }: { song: Song }) => {
 	//----------------------
 	// ==> Song Photo
 	//----------------------
-	const [isUpdatingSongPhoto, toggleIsUpdatingSongPhoto] = React.useState<boolean>(false);
+
 	const songPhotoModal = (
 		<Modal
-			open={isUpdatingSongPhoto}
-			onCancel={() => toggleIsUpdatingSongPhoto(false)}
-			title={`Update "${song.title}" Details`}
+			open={songPhotoUploadFocus && songPhotoUploadFocus._id === song._id ? true : false}
+			onCancel={() => setSongPhotoUploadFocus(null)}
+			destroyOnClose={true}
+			title={`"${song.title}" Photo`}
 			footer={React.createElement(() => {
-				return (
-					<div>
-						<Button onClick={() => toggleIsUpdatingSongPhoto(false)} type='secondary'>
-							Cancel
-						</Button>
-						<Button onClick={() => toggleIsUpdatingSongPhoto(false)} type='primary'>
-							Update
-						</Button>
-					</div>
-				);
+				return null;
 			})}>
-			{song.photo && <p>SONG LISTS will default to Album Photo if photo is removed.</p>}
-			{!song.photo && (
-				<p>
-					SONG LISTS will use <strong>song photo over album photo if present.</strong> If you wish to go back
-					to album photo in the future, remove the photo added to the song.
-				</p>
-			)}
+			<div>
+				{song.photo && <p>SONG LISTS will default to Album Photo if photo is removed.</p>}
+				{!song.photo && (
+					<p>
+						SONG LISTS will use <strong>song photo over album photo if present.</strong> If you wish to go
+						back to album photo in the future, remove the photo added to the song.
+					</p>
+				)}
+				<ManageSongPhotoForm />
+			</div>
 		</Modal>
 	);
 
