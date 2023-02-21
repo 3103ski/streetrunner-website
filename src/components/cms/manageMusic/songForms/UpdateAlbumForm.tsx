@@ -7,40 +7,31 @@ import { Input, Button, PhotoInput } from 'components';
 import { useForm } from 'hooks';
 
 const UpdateAlbumForm = () => {
-	const { isLoading, setUpdatingAlbum, updatingAlbum, handleUpdateAlbum } =
-		React.useContext(ManageDiscographyContext);
+	const { isLoading, setData, albumUpdateFocus, handleUpdateAlbum } = React.useContext(ManageDiscographyContext);
 	const [form] = Form.useForm();
 	const { values, onChange, setValue } = useForm({
 		initialState: {
-			title: updatingAlbum ? updatingAlbum.title : '',
-			year: updatingAlbum ? updatingAlbum.year : null,
-			artist: updatingAlbum ? updatingAlbum.artist : '',
+			title: albumUpdateFocus ? albumUpdateFocus.title : '',
+			year: albumUpdateFocus ? albumUpdateFocus.year : null,
+			artist: albumUpdateFocus ? albumUpdateFocus.artist : '',
 			newAlbumPhoto: null,
 		},
 	});
 
 	function handleConfirmUpdateAlbum() {
-		return handleUpdateAlbum(values, successCallback, errorCallback);
-	}
-
-	function successCallback(data: any) {
-		console.log({ data });
-	}
-
-	function errorCallback(errors: any) {
-		console.log({ errors });
+		return handleUpdateAlbum(values);
 	}
 
 	const [photoUpdatePreview, setPhotoUpdatePreview] = React.useState(
-		updatingAlbum && updatingAlbum.photo ? updatingAlbum.photo.secure_url : ''
+		albumUpdateFocus && albumUpdateFocus.photo ? albumUpdateFocus.photo.secure_url : ''
 	);
 
 	const cancelAlbumUpdate = React.useCallback(() => {
-		setUpdatingAlbum(null);
-	}, [setUpdatingAlbum]);
+		setData({ albumUpdateFocus: null });
+	}, [setData]);
 
 	React.useEffect(() => {
-		if (!updatingAlbum && values.newAlbumPhoto !== null) {
+		if (!albumUpdateFocus && values.newAlbumPhoto !== null) {
 			setPhotoUpdatePreview('');
 			form.setFieldsValue({
 				title: '',
@@ -50,7 +41,7 @@ const UpdateAlbumForm = () => {
 			});
 			setValue({ newAlbumPhoto: null });
 		}
-	}, [form, setValue, updatingAlbum, values.newAlbumPhoto]);
+	}, [form, setValue, albumUpdateFocus, values.newAlbumPhoto]);
 
 	return (
 		<Form form={form}>
@@ -67,11 +58,11 @@ const UpdateAlbumForm = () => {
 					<Form.Item>
 						<Input name='year' value={values.year} onChange={onChange} placeholder='Year' />
 					</Form.Item>
-					{updatingAlbum && (
+					{albumUpdateFocus && (
 						<PhotoInput.PhotoPreview
 							preview={
-								photoUpdatePreview === '' && updatingAlbum.photo
-									? updatingAlbum.photo.secure_url
+								photoUpdatePreview === '' && albumUpdateFocus.photo
+									? albumUpdateFocus.photo.secure_url
 									: photoUpdatePreview
 							}
 							name='newAlbumPhoto'

@@ -10,7 +10,7 @@ import UploadAudioSection from './songFormComponents/section_Audio';
 const ReplaceSongForm = () => {
 	const { values, onChange } = useForm({ initialState: { audio: null } });
 	const [form] = Form.useForm();
-	const { setReplaceAudio, isLoading, handleReplaceAudio } = React.useContext(ManageDiscographyContext);
+	const { toggleAdminValue, setData, isLoading, handleReplaceAudio } = React.useContext(ManageDiscographyContext);
 	const [errors, setErrors] = React.useState<any>(null);
 	const [api, contextHolder] = notification.useNotification();
 
@@ -30,6 +30,11 @@ const ReplaceSongForm = () => {
 		console.log({ errors });
 		setErrors(errors.response.data.errors);
 	}
+
+	const cancel = () => {
+		setData({ songUpdateFocus: null });
+		toggleAdminValue({ showReplaceAudioModal: false });
+	};
 
 	React.useEffect(() => {
 		return () => {
@@ -63,7 +68,7 @@ const ReplaceSongForm = () => {
 				<>
 					<UploadAudioSection onChange={onChange} values={values} />
 					<div>
-						<Button onClick={() => setReplaceAudio(null)} type='secondary'>
+						<Button onClick={cancel} type='secondary'>
 							Cancel
 						</Button>
 						<Button onClick={handleConfirmReplaceAudio} type='primary'>

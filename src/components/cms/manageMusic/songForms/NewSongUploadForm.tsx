@@ -78,7 +78,7 @@ const SongForm = ({ notificationAPI }: AddSongInterface) => {
 	}, [notificationAPI, errors]);
 
 	// ==> Setup forms submission protocol
-	const { handleUploadNewSong, isLoading, toggleIsAddingSong, albums } = React.useContext(ManageDiscographyContext);
+	const { handleUploadNewSong, isLoading, albums, toggleAdminValue } = React.useContext(ManageDiscographyContext);
 
 	const onSubmit = async () => {
 		// TODO :: VALIDATE SONG VALUES BEFORE UPLOAD
@@ -120,7 +120,7 @@ const SongForm = ({ notificationAPI }: AddSongInterface) => {
 				</div>
 			)}
 			<div className={Style.FormContainer}>
-				<div className={Style.CloseForm} onClick={() => toggleIsAddingSong(false)}>
+				<div className={Style.CloseForm} onClick={() => toggleAdminValue({ showNewSongForm: false })}>
 					<IconifyIcon icon={ICON_CLOSE} />
 				</div>
 
@@ -138,7 +138,10 @@ const SongForm = ({ notificationAPI }: AddSongInterface) => {
 					<UploadAudioSection onChange={onChange} values={values} />
 
 					<Button onClick={onSubmit}>Add To Discography</Button>
-					<Button type='secondary' style={{ marginLeft: '10px' }} onClick={() => toggleIsAddingSong(false)}>
+					<Button
+						type='secondary'
+						style={{ marginLeft: '10px' }}
+						onClick={() => toggleAdminValue({ showNewSongForm: false })}>
 						Cancel
 					</Button>
 				</Form>

@@ -43,13 +43,15 @@ const SongDetailsSection = ({
 		<div className={Style.FormSection}>
 			<h1>Song Details</h1>
 			<Row style={{ width: '100%' }}>
-				<Col span={values.useAlbumPhoto ? 0 : 6}>
-					{/* Adding photo for the new song AS SONG PHOTO - not album photo - user can leave this blank and use the photo from album */}
-					<PhotoInput.PhotoPreview preview={songPhotoPreview} name='photo' />
-					<PhotoInput.ResetWrapper name='photo'>
-						<PhotoInput name='photo' setterCallback={setSongPhotoPreview} onChange={onChange} />
-					</PhotoInput.ResetWrapper>
-				</Col>
+				{!hidePhotoOption && (
+					<Col span={values.useAlbumPhoto ? 0 : 6}>
+						{/* Adding photo for the new song AS SONG PHOTO - not album photo - user can leave this blank and use the photo from album */}
+						<PhotoInput.PhotoPreview preview={songPhotoPreview} name='photo' />
+						<PhotoInput.ResetWrapper name='photo'>
+							<PhotoInput name='photo' setterCallback={setSongPhotoPreview} onChange={onChange} />
+						</PhotoInput.ResetWrapper>
+					</Col>
+				)}
 
 				<Col span={values.useAlbumPhoto ? 24 : 18}>
 					<p>Shared Details</p>

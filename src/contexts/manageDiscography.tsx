@@ -9,28 +9,30 @@ import { updateObj } from 'util/index';
 // Contexts
 import actions from './actionTypes';
 
-interface ContextInterface {
+export interface ManageDiscographyInterface {
 	// Context Data
 	songs: Song[];
 	albums: Album[];
 
 	// Context State
-	isAddingSong: boolean;
 	isLoading: boolean;
-	isRemovingSongPhoto: boolean;
-	songPhotoUploadFocus: Song | null;
 
-	updatingSong: null | Song;
-	replaceAudio: null | Song;
-	updatingAlbum: null | Album;
+	showNewSongForm: boolean;
+	showDeleteSongModal: boolean;
+	showSongPhotoModal: boolean;
+	showReplaceAudioModal: boolean;
+	showUpdateAlbumModal: boolean;
+	showUpdateSongDetailsModal: boolean;
 
-	error: any;
+	// Focus Values
+	songUpdateFocus: null | Song;
+	albumUpdateFocus: null | Album;
+
+	errors: any;
 
 	// Context Methods
-	setUpdatingSong: Function;
-	setReplaceAudio: Function;
-	setUpdatingAlbum: Function;
-	setSongPhotoUploadFocus: Function;
+	toggleAdminValue: (toggles: ToggleValuesInterface) => void;
+	setData: (data: SetterDataInterface) => void;
 
 	handleUploadNewSong: Function;
 	handleUpdateSongDetails: Function;
@@ -39,42 +41,35 @@ interface ContextInterface {
 	handleAddSongPhoto: Function;
 	handleDeleteSongPhoto: Function;
 	handleUpdateAlbum: Function;
-	removeSong: Function;
 
 	toggleIsLoading: Function;
-	toggleIsAddingSong: Function;
 	toggleIsRemovingSongPhoto: Function;
 }
 
-interface ActionsInterface {
-	type: string;
-	song?: Song;
-	songs?: Song[];
-	album?: Album;
-	albums?: Album[];
-	isAddingSong?: boolean;
-	songPhotoUploadFocus?: null | Song;
-	updatingSong?: null | Song;
-	updatingAlbum?: null | Album;
-	replaceAudio?: null | Song;
-	isLoading?: boolean;
-	error?: any;
-}
-
-const initialState: ContextInterface = {
-	// Context Data
+const initialState: ManageDiscographyInterface = {
+	// State Data
 	albums: [...MockAlbums] as Album[],
 	songs: [] as Song[],
 
-	// Context State
-	error: null,
-	isAddingSong: false,
+	// Loading Flags
 	isLoading: false,
-	isRemovingSongPhoto: false,
-	songPhotoUploadFocus: null,
-	replaceAudio: null,
-	updatingAlbum: null,
-	updatingSong: null,
+
+	// Form Flags
+	showNewSongForm: false,
+	showDeleteSongModal: false,
+	showSongPhotoModal: false,
+	showReplaceAudioModal: false,
+	showUpdateSongDetailsModal: false,
+	showUpdateAlbumModal: false,
+
+	// Focus Variables
+	songUpdateFocus: null,
+	albumUpdateFocus: null,
+
+	errors: null,
+
+	toggleAdminValue() {},
+	setData() {},
 
 	// Context Methods
 	handleAddSongPhoto: () => null,
@@ -85,154 +80,90 @@ const initialState: ContextInterface = {
 	handleUpdateSongDetails: () => null,
 	handleUploadNewSong: () => null,
 
-	removeSong: () => null,
-
-	setReplaceAudio: () => null,
-	setUpdatingAlbum: () => null,
-	setUpdatingSong: () => null,
-
-	toggleIsAddingSong: () => null,
 	toggleIsLoading: () => null,
 	toggleIsRemovingSongPhoto: () => null,
-	setSongPhotoUploadFocus: () => null,
 };
 
-const ManageDiscographyContext = React.createContext(initialState);
+const ManageDiscographyContext = React.createContext<ManageDiscographyInterface>(initialState);
 
-/**
- * >>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<
- * >>>>>>>>>>>>>>>>>>> TODO <<<<<<<<<<<<<<<<<<<<<<<<<<
- * >>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<
- *
- * --> Finish the Song Photo Upload feature
- * - Change boolean flag for song photo to hold a song so only one modal opens
- * - Set up upload function that created MultipartForm and submits to API
- * - Create success and error handler here. Success changes the focus song for modal close
- * - Run local update song handler using returned song
- *
- * --> Add option to remove Song Photo
- * - Set up api handler
- * - Put focus song in state
- * - Run local update song handler using returned song
- */
+interface SetterDataInterface {
+	song?: Song;
+	songs?: Song[];
+	album?: Album;
+	albums?: Album[];
 
-const DiscographyReducer = (
-	state: any,
-	{
-		type,
-		song,
-		songs,
-		album,
-		isAddingSong,
-		updatingSong,
-		replaceAudio,
-		updatingAlbum,
-		songPhotoUploadFocus,
-		isLoading,
-		albums,
-		error,
-	}: ActionsInterface
-) => {
+	errors?: any;
+
+	albumUpdateFocus?: null | Album;
+	songUpdateFocus?: null | Song;
+}
+
+interface ToggleValuesInterface {
+	// Loading Toggles
+	isLoading?: boolean;
+	// Form Toggles
+	showNewSongForm?: boolean;
+	showDeleteSongModal?: boolean;
+	showUpdateAlbumModal?: boolean;
+	showSongPhotoModal?: boolean;
+	showReplaceAudioModal?: boolean;
+	showUpdateSongDetailsModal?: boolean;
+}
+
+interface ReducerInterface {
+	type: string;
+	toggles?: ToggleValuesInterface;
+	data?: SetterDataInterface;
+	errors?: any;
+}
+
+const DiscographyReducer = (state: any, { type, data, toggles, errors }: ReducerInterface) => {
 	switch (type) {
-		// ==>> Data Setters
-		case actions.SET_SONGS:
-			return updateObj(state, { songs });
-		case actions.SET_ALBUMS:
-			return updateObj(state, { albums });
 		case actions.SET_ERROR:
-			return updateObj(state, { error });
-
-		// >> Update Focus Setters
-		case actions.SET_UPDATE_SONG_DETAILS:
-			return updateObj(state, { updatingSong });
-		case actions.SET_REPLACE_AUDIO:
-			return updateObj(state, { replaceAudio });
-		case actions.SET_UPDATING_ALBUM:
-			return updateObj(state, { updatingAlbum });
-
-		// ==>> Toggles
-		case actions.TOGGLE_IS_ADDING_SONG:
-			return updateObj(state, { isAddingSong });
-		case actions.TOGGLE_IS_LOADING:
-			return updateObj(state, { isLoading });
-		case actions.TOGGLE_IS_UPLOADING_SONG_PHOTO:
-			return updateObj(state, { songPhotoUploadFocus });
-
-		// ==>> State Data Actions
-		case actions.REMOVE_SONG:
-			songs = !song ? songs : state.songs.filter((s: Song) => s._id.toString() !== song._id.toString());
-			return updateObj(state, {
-				songs,
-			});
-		case actions.UPDATE_SONG:
-			songs = !song ? songs : state.songs.map((s: Song) => (s._id === song._id ? song : s));
-			return updateObj(state, {
-				songs,
-			});
-		case actions.ADD_SONG:
-			return updateObj(state, {
-				songs: !song ? songs : [song, ...state.songs],
-			});
-		case actions.ADD_ALBUM:
-			return updateObj(state, {
-				albums: !album ? state.albums : [...state.albums, album],
-			});
-		case actions.UPDATE_ALBUM:
-			albums = !album ? state.albums : state.albums.map((a: Album) => (a._id !== album._id ? a : album));
-			songs = !album
-				? state.songs
-				: state.songs.map((s: Song) => {
-						if (s.album._id === album._id) return { ...s, album };
-						return s;
-				  });
-			return updateObj(state, {
-				albums,
-				songs,
-			});
+			return updateObj(state, { errors });
+		case actions.TOGGLE_VALUE:
+			return updateObj(state, toggles);
+		case actions.SET_DATA:
+			return updateObj(state, data);
 		default:
 			return state;
 	}
 };
 
+interface GeneralErrorHandlerInterface {
+	errors: any;
+	callback?: Function;
+	toggles?: ToggleValuesInterface;
+	data?: SetterDataInterface;
+}
+
 const ManageDiscographyProvider = (props: any) => {
-	const [state, dispatch] = React.useReducer(DiscographyReducer, ManageDiscographyContext);
+	const [state, dispatch] = React.useReducer(DiscographyReducer, initialState);
 
-	//----------------------------
-	// ==> STATE Functions
-	//----------------------------
-	// --> UI Toggles
-	function toggleIsLoading(isLoading: boolean) {
-		return dispatch({ type: actions.TOGGLE_IS_LOADING, isLoading });
+	//=====================
+	//===> NEW HANDLERS
+	//=====================
+	// -> New Action Functions
+	const toggleAdminValue = (toggles: ToggleValuesInterface) => dispatch({ type: actions.TOGGLE_VALUE, toggles });
+	const setData = (data: SetterDataInterface) => dispatch({ type: actions.SET_DATA, data });
+
+	// -> New Helper Functions
+	function replaceSongInStateHelper(song: Song) {
+		let songs = !song ? state.songs : state.songs.map((s: Song) => (s._id === song._id ? song : s));
+		return setData({ songs });
 	}
 
-	function toggleIsAddingSong(isAddingSong: boolean) {
-		return dispatch({ type: actions.TOGGLE_IS_ADDING_SONG, isAddingSong });
+	function removeSongFromStateHelper(song: Song) {
+		let songs = !song ? state.songs : state.songs.filter((s: Song) => s._id.toString() !== song._id.toString());
+		return setData({ songs });
 	}
 
-	// --> UI Setters
-	function setSongPhotoUploadFocus(songPhotoUploadFocus: Song | null) {
-		return dispatch({ type: actions.TOGGLE_IS_UPLOADING_SONG_PHOTO, songPhotoUploadFocus });
-	}
-
-	function setUpdatingSong(updatingSong: Song | null) {
-		return dispatch({ type: actions.SET_UPDATE_SONG_DETAILS, updatingSong });
-	}
-
-	function setReplaceAudio(replaceAudio: Song | null) {
-		return dispatch({ type: actions.SET_REPLACE_AUDIO, replaceAudio });
-	}
-
-	function setUpdatingAlbum(updatingAlbum: Album | null) {
-		return dispatch({ type: actions.SET_UPDATING_ALBUM, updatingAlbum });
-	}
-
-	// --> Local Data Updates
-	function addSong(song: Song) {
-		return dispatch({ type: actions.ADD_SONG, song });
-	}
-
-	function removeSong(song: Song) {
-		return dispatch({ type: actions.REMOVE_SONG, song });
+	// Generic Handlers
+	function generalErrorHandler({ errors, callback, toggles, data }: GeneralErrorHandlerInterface) {
+		console.log({ errors });
+		if (callback) callback(errors);
+		if (toggles) toggleAdminValue(toggles);
+		if (data) setData(data);
 	}
 
 	//----------------------------
@@ -243,124 +174,128 @@ const ManageDiscographyProvider = (props: any) => {
 			const { album, song } = data;
 
 			if (album && song) {
-				dispatch({ type: actions.ADD_SONG, song });
-				dispatch({ type: actions.ADD_ALBUM, album });
+				let [songs, albums] = [
+					[...state.songs, song],
+					[...state.albums, album],
+				];
+				setData({ albums, songs });
+				success();
 			}
 
-			success();
-
-			toggleIsLoading(false);
-			toggleIsAddingSong(false);
+			toggleAdminValue({ showNewSongForm: false, isLoading: false });
 		}
 
-		function errorCallback(error: any) {
-			toggleIsLoading(false);
-			handleError(error);
-		}
+		const errorCallback = (errors: any) =>
+			generalErrorHandler({ errors, callback: handleError, toggles: { isLoading: false } });
 
 		if (data.audio) {
-			toggleIsLoading(true);
+			toggleAdminValue({ isLoading: true });
 			const multipart_form_data = new FormData();
 			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
-
 			return audioAPI.addNewSong({ data: multipart_form_data, successCallback, errorCallback });
 		}
 	}
 
-	async function handleUpdateSongDetails(data: any, success: Function, handleError: Function) {
+	//=========================
+	//== Update Song Details
+	//=========================
+	async function handleUpdateSongDetails(data: any) {
 		function successCallback(data: any) {
-			const { song } = data;
-			if (song) {
-				dispatch({ type: actions.UPDATE_SONG, song });
-			} else {
-				console.log('Did not get a song back from api success');
+			if (data.song) {
+				replaceSongInStateHelper(data.song);
+				setData({ songUpdateFocus: null });
+				toggleAdminValue({ showUpdateSongDetailsModal: false });
 			}
-
-			success(data);
-
-			setUpdatingSong(null);
-			toggleIsLoading(false);
+			toggleAdminValue({ isLoading: false });
 		}
 
-		function errorCallback(errors: any) {
-			toggleIsLoading(false);
-			handleError(errors);
-		}
+		const errorCallback = (errors: any) => generalErrorHandler({ errors, toggles: { isLoading: false } });
 
-		if (data && state.updatingSong) {
-			toggleIsLoading(true);
+		if (data && state.songUpdateFocus) {
+			toggleAdminValue({ isLoading: true });
 			const multipart_form_data = new FormData();
 			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
 			return audioAPI.updateSong({
 				data: multipart_form_data,
 				successCallback,
 				errorCallback,
-				updateId: state.updatingSong._id,
+				updateId: state.songUpdateFocus._id,
 			});
 		}
 	}
 
+	//=======================
+	//== Replace Song Audio
+	//=======================
 	async function handleReplaceAudio(data: any, success: Function, handleError: Function) {
-		function successCallback(data: any) {
-			const { song } = data;
-			if (song) {
-				dispatch({ type: actions.UPDATE_SONG, song });
-			} else {
-				console.log('Did not get a song back from api success');
+		const successCallback = (data: any) => {
+			if (data.song) {
+				replaceSongInStateHelper(data.song);
+				success(data);
+				setData({ songUpdateFocus: null });
+				toggleAdminValue({ showReplaceAudioModal: false });
 			}
+			toggleAdminValue({ isLoading: false });
+		};
 
-			success(data);
+		const errorCallback = (errors: any) =>
+			generalErrorHandler({ errors, callback: handleError, toggles: { isLoading: false } });
 
-			setReplaceAudio(null);
-			toggleIsLoading(false);
-		}
-
-		function errorCallback(errors: any) {
-			toggleIsLoading(false);
-			handleError(errors);
-		}
-
-		if (data && state.replaceAudio) {
-			toggleIsLoading(true);
+		if (data && state.songUpdateFocus) {
+			toggleAdminValue({ isLoading: true });
 			const multipart_form_data = new FormData();
-
 			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
+
 			return audioAPI.replaceAudio({
 				data: multipart_form_data,
 				successCallback,
 				errorCallback,
-				updateId: state.replaceAudio._id,
+				updateId: state.songUpdateFocus._id,
 			});
 		}
 	}
 
-	async function handleDeleteSong(song: Song, successCallback: Function, errorCallback: Function) {
+	//================
+	//== Delete Song
+	//================
+	async function handleDeleteSong(song: Song) {
+		const successCallback = (data: any) => {
+			if (data.deletedSong) removeSongFromStateHelper(data.deletedSong);
+			toggleAdminValue({ showDeleteSongModal: false, isLoading: false });
+		};
+
+		const errorCallback = (errors: any) => {
+			toggleAdminValue({ isLoading: false });
+			console.log({ errors });
+		};
 		return audioAPI.deleteSong({ data: song, successCallback, errorCallback });
 	}
 
-	async function handleUpdateAlbum(data: any, success: Function, handleError: Function) {
-		function successCallback(data: any) {
+	//=========================
+	//== Update Album Details
+	//=========================
+	async function handleUpdateAlbum(data: any) {
+		const successCallback = (data: any) => {
 			const { album } = data;
-
 			if (album) {
-				dispatch({ type: actions.UPDATE_ALBUM, album });
-			} else {
-				console.log('Did not get a song back from api success');
+				let albums = !album ? state.albums : state.albums.map((a: Album) => (a._id !== album._id ? a : album));
+				let songs = !album
+					? state.songs
+					: state.songs.map((s: Song) => {
+							if (s.album._id === album._id) return { ...s, album };
+							return s;
+					  });
+				setData({ albumUpdateFocus: null, albums, songs });
+				toggleAdminValue({ showUpdateAlbumModal: false });
 			}
+			// maybe hereeee???   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+			toggleAdminValue({ isLoading: false });
+		};
 
-			success(data);
+		const errorCallback = (errors: any) => generalErrorHandler({ errors, toggles: { isLoading: false } });
 
-			setUpdatingAlbum(null);
-			toggleIsLoading(false);
-		}
-
-		function errorCallback(errors: any) {
-			toggleIsLoading(false);
-			handleError(errors);
-		}
-
-		if (data && state.updatingAlbum) {
-			toggleIsLoading(true);
+		if (data && state.albumUpdateFocus) {
+			toggleAdminValue({ isLoading: true });
 			const multipart_form_data = new FormData();
 
 			Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
@@ -368,51 +303,51 @@ const ManageDiscographyProvider = (props: any) => {
 				data: multipart_form_data,
 				successCallback,
 				errorCallback,
-				updateId: state.updatingAlbum._id,
+				updateId: state.albumUpdateFocus._id,
 			});
 		}
 	}
 
-	async function handleAddSongPhoto(data: any, handleSuccess?: Function, handleError?: Function) {
-		toggleIsLoading(true);
+	//=======================
+	//== Add Song Photo
+	//=======================
+	async function handleAddSongPhoto(data: any) {
+		toggleAdminValue({ isLoading: true });
+
 		const multipart_form_data = new FormData();
 		Object.entries(data).map((entry: any) => multipart_form_data.append(entry[0], entry[1]));
 
-		function successCallback(data: any) {
-			console.log({ data });
-			const { song } = data;
-			if (song) {
-				console.log('got the song');
-				if (handleSuccess) handleSuccess();
-				dispatch({ type: actions.UPDATE_SONG, song });
-				setSongPhotoUploadFocus(null);
-			} else {
-				console.log('got no song');
+		const successCallback = (data: any) => {
+			if (data.song) {
+				replaceSongInStateHelper(data.song);
+				setData({ songUpdateFocus: null });
+				toggleAdminValue({ showSongPhotoModal: false });
 			}
-			toggleIsLoading(false);
-		}
+			toggleAdminValue({ isLoading: false });
+		};
+
 		function errorCallback(errors: any) {
-			if (handleError) handleError(errors);
-			toggleIsLoading(false);
+			toggleAdminValue({ isLoading: false });
 		}
 
 		return audioAPI.uploadSongPhoto({ data: multipart_form_data, successCallback, errorCallback });
 	}
 
+	//=======================
+	//== Remove Song Photo
+	//=======================
 	async function handleDeleteSongPhoto(songId: string) {
-		toggleIsLoading(true);
-		console.log({ songId });
+		toggleAdminValue({ isLoading: true });
 
 		function successCallback(data: any) {
-			console.log({ data });
-			if (data.song) {
-				dispatch({ type: actions.UPDATE_SONG, song: data.song });
-				setSongPhotoUploadFocus(null);
-			} else {
-				console.log('no song came back');
+			let { song } = data;
+			if (song) {
+				replaceSongInStateHelper(song);
+				setData({ songUpdateFocus: null });
+				toggleAdminValue({ showSongPhotoModal: false });
 			}
 
-			toggleIsLoading(false);
+			toggleAdminValue({ isLoading: false });
 		}
 
 		function errorCallback(errors: any) {
@@ -428,7 +363,8 @@ const ManageDiscographyProvider = (props: any) => {
 	 *---------------------
 	 * This context only mounts if the user is authenticated. Fetch all audio in DB and load into state
 	 */
-	async function fetchAdminAudio() {
+	const fetchAdminAudio = React.useCallback(async () => {
+		toggleAdminValue({ isLoading: true });
 		let { songs } = await audioAPI.fetchSongs();
 
 		let albums = [] as Album[];
@@ -442,14 +378,14 @@ const ManageDiscographyProvider = (props: any) => {
 			return null;
 		});
 
-		dispatch({ type: actions.SET_SONGS, songs });
-		dispatch({ type: actions.SET_ALBUMS, albums });
+		setData({ songs, albums });
+		toggleAdminValue({ isLoading: false });
 		return songs;
-	}
+	}, []);
 
 	React.useEffect(() => {
 		fetchAdminAudio();
-	}, []);
+	}, [fetchAdminAudio]);
 
 	return (
 		<ManageDiscographyContext.Provider
@@ -458,24 +394,22 @@ const ManageDiscographyProvider = (props: any) => {
 				...state,
 				songs: state.songs ? state.songs : [],
 
-				// Data updates
-				addSong,
-				removeSong,
+				// NEW
+				toggleAdminValue,
+				setData,
+
+				// Create/Delete
 				handleUploadNewSong,
 				handleDeleteSong,
-				handleUpdateSongDetails,
-				handleDeleteSongPhoto,
-				handleReplaceAudio,
-				handleUpdateAlbum,
-				handleAddSongPhoto,
 
-				// Toggles
-				toggleIsAddingSong,
-				toggleIsLoading,
-				setSongPhotoUploadFocus,
-				setUpdatingSong,
-				setReplaceAudio,
-				setUpdatingAlbum,
+				// Updaters
+				handleUpdateSongDetails,
+				handleUpdateAlbum,
+				handleReplaceAudio,
+
+				// Song Photos
+				handleAddSongPhoto,
+				handleDeleteSongPhoto,
 			}}
 			{...props}
 		/>

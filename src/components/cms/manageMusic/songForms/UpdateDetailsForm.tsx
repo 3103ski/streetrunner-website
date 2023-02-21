@@ -38,7 +38,8 @@ const UpdateDetails = ({ song }: { song: Song }) => {
 	});
 	const [form] = Form.useForm();
 
-	const { setUpdatingSong, handleUpdateSongDetails, isLoading } = React.useContext(ManageDiscographyContext);
+	const { handleUpdateSongDetails, isLoading, setData, toggleAdminValue } =
+		React.useContext(ManageDiscographyContext);
 	const [api, contextHolder] = notification.useNotification();
 	const [errors, setErrors] = React.useState<any>(null);
 
@@ -75,17 +76,13 @@ const UpdateDetails = ({ song }: { song: Song }) => {
 			setErrors(errors);
 		} else {
 			if (valid) {
-				handleUpdateSongDetails(data, handleUpdateDetailsSuccess, handleUpdateDetailsError);
+				handleUpdateSongDetails(data);
 			}
 		}
 	};
-	const handleCancelUpdate = () => setUpdatingSong(null);
-
-	const handleUpdateDetailsSuccess = (data: any) => {
-		console.log({ successData: data });
-	};
-	const handleUpdateDetailsError = (errors: any) => {
-		console.log({ errors });
+	const handleCancelUpdate = () => {
+		setData({ songUpdateFocus: null });
+		toggleAdminValue({ showUpdateSongDetailsModal: false });
 	};
 
 	return (

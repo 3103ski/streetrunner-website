@@ -31,9 +31,11 @@ interface ContextInterface {
 	// Methods
 	handlePlaySong: Function;
 	handleClickProgressBar: Function;
+
 	setError: Function;
 	setSong: Function;
 	setPlayerStatus: Function;
+
 	toggleMutePlayer: Function;
 	togglePausePlayer: Function;
 	togglePlayerLoading: Function;

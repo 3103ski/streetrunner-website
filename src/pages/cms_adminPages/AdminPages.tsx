@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Tabs } from 'antd';
 
-import { ManageMusic, ManageAccount, ManageVideos } from 'components';
+import { ManageMusic, ManageAccount } from 'components';
 import { ManageDiscographyProvider } from 'contexts';
 import { SecurityWrapper, ContentCol } from 'layout';
 
@@ -43,7 +43,6 @@ const AdminPages = () => {
 					<Routes>
 						<Route path={routes.CMS_ACCOUNT} element={<ManageAccount />} />
 						<Route path={routes.CMS_MANAGE_MUSIC} element={<ManageMusic />} />
-						<Route path={routes.CMS_MANAGE_VIDEOS} element={<ManageVideos />} />
 					</Routes>
 				</ContentCol>
 			</ManageDiscographyProvider>

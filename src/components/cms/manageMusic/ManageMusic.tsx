@@ -8,11 +8,11 @@ import { Button, SongListItem } from 'components';
 import { ManageDiscographyContext } from 'contexts';
 
 // Component Imports
-import UpdateAlbumForm from './songForm/UpdateAlbumForm';
-import NewSongUploadForm from './songForm/NewSongUploadForm';
+import UpdateAlbumForm from './songForms/UpdateAlbumForm';
+import NewSongUploadForm from './songForms/NewSongUploadForm';
 
 const ManageMusic = () => {
-	const { toggleIsAddingSong, isAddingSong, songs, updatingAlbum, setUpdatingAlbum } =
+	const { showNewSongForm, songs, albumUpdateFocus, setData, toggleAdminValue } =
 		React.useContext(ManageDiscographyContext);
 	const [api, contextHolder] = notification.useNotification();
 
@@ -22,9 +22,9 @@ const ManageMusic = () => {
 	const updateAlbumModal = (
 		<Modal
 			destroyOnClose={true}
-			open={updatingAlbum ? true : false}
-			onCancel={() => setUpdatingAlbum(null)}
-			title={`Update "${updatingAlbum ? updatingAlbum.title : ''}" Details`}
+			open={albumUpdateFocus ? true : false}
+			onCancel={() => setData({ albumUpdateFocus: null })}
+			title={`Update "${albumUpdateFocus ? albumUpdateFocus.title : ''}" Details`}
 			footer={React.createElement(() => null)}>
 			<p>Updating Album will update for all songs attached to it</p>
 			<UpdateAlbumForm />
@@ -34,13 +34,15 @@ const ManageMusic = () => {
 	return (
 		<>
 			{contextHolder}
-			{isAddingSong ? (
+			{showNewSongForm ? (
 				<NewSongUploadForm notificationAPI={api} />
 			) : (
 				<>
 					{updateAlbumModal}
 					<div style={{ display: 'flex', marginBottom: '10px' }}>
-						<Button style={{ marginLeft: 'auto' }} onClick={() => toggleIsAddingSong(true)}>
+						<Button
+							style={{ marginLeft: 'auto' }}
+							onClick={() => toggleAdminValue({ showNewSongForm: true })}>
 							Add Song
 						</Button>
 					</div>
