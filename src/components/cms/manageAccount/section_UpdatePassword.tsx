@@ -10,7 +10,7 @@ import { useForm } from 'hooks';
 import { Spacer } from 'layout';
 import { adminAPI } from 'apis';
 
-import Style from './shared.module.scss';
+// import Style from './shared.module.scss';
 
 const UpdatePasswordSection = ({ messageApi }: { messageApi: any }) => {
 	//----------------------
@@ -30,7 +30,6 @@ const UpdatePasswordSection = ({ messageApi }: { messageApi: any }) => {
 
 	function successCallback() {
 		pwForm.setFieldsValue(pwInitialState);
-
 		pwResetVal(pwInitialState);
 		toggleIsLoadingUpdatePassword(false);
 
@@ -58,9 +57,7 @@ const UpdatePasswordSection = ({ messageApi }: { messageApi: any }) => {
 			{isLoadingUpdatePassword ? (
 				<Loader />
 			) : !showForm ? (
-				<p className={Style.ToggleText} onClick={() => toggleShowForm(true)}>
-					Change My Password
-				</p>
+				<Button onClick={() => toggleShowForm(true)}>Change My Password</Button>
 			) : (
 				<Form form={pwForm}>
 					<Form.Item>
@@ -90,15 +87,16 @@ const UpdatePasswordSection = ({ messageApi }: { messageApi: any }) => {
 							placeholder='Confirm New Password'
 						/>
 					</Form.Item>
+
 					<Form.Item>
 						<Button onClick={handleUpdatePassword}>Update Password</Button>
 					</Form.Item>
-					<p className={Style.ToggleText} onClick={() => toggleShowForm(false)}>
+					<Button type='secondary' onClick={() => toggleShowForm(false)}>
 						cancel
-					</p>
+					</Button>
 				</Form>
 			)}
-			<Spacer height='25px' />
+			<Spacer height='45px' />
 		</>
 	);
 };

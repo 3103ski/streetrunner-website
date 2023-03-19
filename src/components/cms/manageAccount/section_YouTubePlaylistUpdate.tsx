@@ -57,9 +57,7 @@ const UpdateYouTubePlaylist = ({ messageApi }: { messageApi: any }) => {
 	}, []);
 
 	React.useEffect(() => {
-		if (!currentYoutubeData) {
-			getCurrentYoutubeInfo();
-		}
+		if (!currentYoutubeData) getCurrentYoutubeInfo();
 	}, [currentYoutubeData, getCurrentYoutubeInfo]);
 
 	return (
@@ -74,9 +72,7 @@ const UpdateYouTubePlaylist = ({ messageApi }: { messageApi: any }) => {
 						<h5>Current Playlist ID : {currentYoutubeData.playlistId}</h5>
 					</div>
 					{!showUpdateForm ? (
-						<p className={Style.ToggleText} onClick={() => toggleShowUpdateForm(true)}>
-							Update Playlist
-						</p>
+						<Button onClick={() => toggleShowUpdateForm(true)}>Update Playlist</Button>
 					) : (
 						<Form form={ytForm}>
 							<Form.Item>
@@ -90,14 +86,14 @@ const UpdateYouTubePlaylist = ({ messageApi }: { messageApi: any }) => {
 							<Form.Item>
 								<Button onClick={handleYouTubeUpdate}>Update Playlist ID</Button>
 							</Form.Item>
-							<p className={Style.ToggleText} onClick={() => toggleShowUpdateForm(false)}>
+							<Button type='secondary' onClick={() => toggleShowUpdateForm(false)}>
 								Cancel
-							</p>
+							</Button>
 						</Form>
 					)}
 				</>
 			)}
-			<Spacer height='25px' />
+			<Spacer height='100px' divider />
 		</>
 	);
 };

@@ -29,22 +29,11 @@
 			border-radius: 10px;
 			margin: 0 var(--photo-x-margin);
 			transition: 0.3s;
-
-			// &:hover {
-			// 	cursor: pointer;
-			// 	transform: scale(1.07);
-			// }
 		}
 
 		&:first-child {
 			margin-left: 0px;
 			animation: roll var(--animation-duration) linear infinite;
 		}
-
-		// &:hover {
-		// 	&:first-child {
-		// 		animation-play-state: paused;
-		// 	}
-		// }
 	}
 }

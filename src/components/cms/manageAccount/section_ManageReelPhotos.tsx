@@ -38,10 +38,10 @@ const ManageReelPhotos = ({ messageApi }: { messageApi: any }) => {
 		const multipart_form_data = new FormData();
 
 		Object.entries(rpValues).map((entry: any) => {
-			console.log({ [entry[0]]: entry[1] });
+			// console.log({ [entry[0]]: entry[1] });
 			return multipart_form_data.append(entry[0], entry[1]);
 		});
-		console.log({ multipart_form_data });
+		// console.log({ multipart_form_data });
 		return adminAPI.uploadReelPhoto(multipart_form_data, newReelphotoSuccess, newReelPhotoError);
 	}
 
@@ -109,6 +109,7 @@ const ManageReelPhotos = ({ messageApi }: { messageApi: any }) => {
 
 	return (
 		<>
+			<Spacer height='45px' />
 			<h1>Reel Photos</h1>
 			<div className={Style.ThumbnailCollectionWrapper}>
 				{currentReelPhotos.map((photo: Photo) => (
@@ -121,7 +122,7 @@ const ManageReelPhotos = ({ messageApi }: { messageApi: any }) => {
 				))}
 			</div>
 			<Button onClick={() => toggleIsAddingReelPhoto(true)}>Add Photo To Reel</Button>
-			<Spacer height='25px' />
+			<Spacer height='100px' divider />
 			<Modal
 				open={focusDeletePhoto ? true : false}
 				footer={React.createElement(() => null)}

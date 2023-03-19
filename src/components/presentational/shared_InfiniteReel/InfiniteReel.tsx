@@ -23,9 +23,7 @@ const InfiniteReel = () => {
 	}
 
 	React.useEffect(() => {
-		if (!reelPhotos) {
-			fetchReelPhotos();
-		}
+		if (!reelPhotos) fetchReelPhotos();
 	}, [fetchReelPhotos, reelPhotos]);
 
 	return (
@@ -44,7 +42,7 @@ const InfiniteReel = () => {
 					} as React.CSSProperties
 				}>
 				<div className={Style.InfiniteReelInner}>
-					{[...reelPhotos, ...reelPhotos].map((photo) => (
+					{[...reelPhotos, ...reelPhotos, ...reelPhotos].map((photo) => (
 						<img src={photo.secure_url} key={`${Math.random()}`} alt={`${photo._id}_song-cover`} />
 					))}
 				</div>
