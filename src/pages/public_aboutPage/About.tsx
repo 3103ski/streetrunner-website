@@ -7,8 +7,8 @@ import { Row, Col, Typography } from 'antd';
 // ==> Project Imports
 import { BioHeaderPic, BioFooterPic } from 'assets';
 import { Button, SocialButtons, InfiniteReel, Overlay } from 'components';
-import routes from 'routes';
 import { Footer, ScrollToTop, ContentCol } from 'layout';
+import routes from 'routes';
 
 // ==> Component
 import Style from './about.module.scss';
@@ -19,12 +19,16 @@ const AboutPage = () => {
 
 	return (
 		<Row justify={'center'} align='middle' style={{ padding: '45px 0 ' }} className={Style.BioSection}>
-			<div className={Style.HeaderPic} style={{ backgroundImage: `url(${BioHeaderPic})` }}>
+			{/* HEADER PHOTO */}
+			<div className={Style.HeaderContainer}>
 				<Overlay type='light' />
+				<img src={BioHeaderPic} className={Style.BGPic} alt='streetrunner looking at award' />
+				<div className={Style.BottomUpGradient} />
 			</div>
 
+			{/* PAGE TEXT CONTENT */}
 			<Col span={24} className={Style.Content}>
-				<ContentCol>
+				<ContentCol style={{ padding: 0 }}>
 					<Title level={1}>STREETRUNNER</Title>
 					<p className={Style.BodyLarge}>
 						Nicholas Warwar, professionally known as STREETRUNNER, is an American, Grammy Award winning,
@@ -41,31 +45,37 @@ const AboutPage = () => {
 						2015), Best Rap Sung Performance (DJ Khaled “Higher” featuring Nipsey Hussle & John Legend
 						2019).
 					</p>
-					<Row>
-						<Col xs={24} md={9}>
-							<div className={Style.ButtonWrapper}>
-								<Button fluid bottomSpace='md' onClick={() => navigate(routes.DISCOGRAPHY)}>
-									Discography
-								</Button>
-								<Button fluid bottomSpace='lg' type='secondary' onClick={() => navigate(routes.VIDEOS)}>
-									Videos
-								</Button>
-								<SocialButtons />
-							</div>
-						</Col>
-					</Row>
 				</ContentCol>
 			</Col>
 
-			{/* These items are fixed to the bottom; ".Content" styling makes space for them in layout with marginbottom. */}
-			<div className={Style.BottomContainer}>
-				<InfiniteReel />
+			{/* SOCIAL LINKS WITH PHOTO */}
+			<div className={Style.SocialSection}>
+				<Overlay type='light' />
+				<Row className={Style.ButtonWrapper}>
+					<Col xs={24} md={9} style={{ position: 'relative' }}>
+						<Button fluid bottomSpace='md' onClick={() => navigate(routes.DISCOGRAPHY)}>
+							Discography
+						</Button>
+						<Button fluid bottomSpace='lg' type='secondary' onClick={() => navigate(routes.VIDEOS)}>
+							Videos
+						</Button>
+						<SocialButtons />
+					</Col>
+				</Row>
+				<img className={Style.BGPic} src={BioFooterPic} alt='streetrunner looking at his phone' />
+
+				{/* PHOTO REEL */}
+				<div className={Style.ReelWrapper}>
+					<InfiniteReel />
+				</div>
+
+				<div className={Style.TopDownGradient} />
+			</div>
+			<div style={{ width: '100%' }}>
 				<Footer color='solid' />
 			</div>
-			<div className={Style.FooterPic} style={{ backgroundImage: `url(${BioFooterPic})` }}>
-				<Overlay />
-			</div>
 
+			{/* FOOTER */}
 			<ScrollToTop />
 		</Row>
 	);
